@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="documents_documents_document_res_partner_view" model="ir.ui.view">
+            <field name="name">documents_documents_document_res_partner_view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="documents.documents_document_res_partner_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_see_documents']" position="after">
+                    <button name="action_view_customer_contract"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('contract_count', '=', 0)]}">
+                        <field name="contract_count" widget="statinfo" string="Contracts"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

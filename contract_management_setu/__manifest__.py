@@ -5,11 +5,12 @@
     'version': '15.0',
     'category': 'Accounting',
     'website': 'https://www.odoo.com/app/invoicing',
-    'depends': ['documents_hr_contract'],
+    'depends': ['documents_hr_contract', 'timesheet_grid', 'project', 'account'],
     'data': [
         'views/contract_management_view.xml',
         'views/project_project_view.xml',
         'views/account_move_view.xml',
+        'views/res_partner_view.xml',
     ],
     'demo': [
     ],
