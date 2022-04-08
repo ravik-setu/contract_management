@@ -29,9 +29,9 @@ class HrContract(models.Model):
         for contract in self:
             if contract.contract_uom == 'hours':
                 contract.total_contract_service_hours = contract.contract_quantity
+                contract.hours_per_day = 0.00
             elif contract.contract_uom == 'days':
                 contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
-                contract.hours_per_day = 0.00
             else:
                 contract.total_contract_service_hours = 0
 
