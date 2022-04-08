@@ -75,6 +75,7 @@
                                 <field name="contract_quantity"/>
                                 <field name="total_contract_service_hours" readonly="1"/>
                                 <field name="remaining_quantity" readonly="1"/>
+                                <field name="used_quantity" widget="progressbar"/>
                             </group>
                         </group>
                         <notebook>

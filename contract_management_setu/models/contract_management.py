@@ -15,6 +15,7 @@ class HrContract(models.Model):
                                                 compute='_compute_total_contract_service_hours')
     contract_quantity = fields.Float(string="Contract Quantity", tracking=1, copy=False)
     remaining_quantity = fields.Float(string="Remaining Quantity")
+    used_quantity = fields.Float(string="Used Quantity")
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
     description = fields.Html(string="Description")
     is_maintain_timesheet = fields.Boolean(string="Maintain a timesheet ?")
@@ -34,6 +35,8 @@ class HrContract(models.Model):
                 contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
             else:
                 contract.total_contract_service_hours = 0
+            if not self.timesheet_ids:
+                    contract.remaining_quantity = contract.total_contract_service_hours
 
     def action_view_customer_invoice(self):
         """
