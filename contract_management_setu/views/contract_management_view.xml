@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
-                    <field name="partner_id"/>
+                    <field name="partner_id" domain="[('customer_rank','>', 0)]"/>
                     <field name="project_id"/>
                     <field name="from_date"/>
                     <field name="to_date"/>
@@ -18,6 +18,11 @@
                     <field name="remaining_quantity"/>
                     <field name="hr_responsible_id"/>
                     <field name="company_id"/>
+                    <field name="state"
+                           widget="badge"
+                           decoration-info="state == 'draft'"
+                           decoration-warning="state == 'close'"
+                           decoration-success="state == 'open'"/>
                 </tree>
             </field>
         </record>
@@ -27,14 +32,29 @@
             <field name="model">hr.contract</field>
             <field name="arch" type="xml">
                 <form>
-                    <sheet>
+                    <header>
+                        <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                    </header>
+                    <sheet string="Budget">
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_customer_invoice"
                                     type="object"
                                     class="oe_stat_button"
-                                    icon="fa-pencil-square-o"
-                                    attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                                    icon="fa-pencil-square-o">
                                 <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                            </button>
+                            <button name="action_view_customer_payment"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-credit-card">
+                                <field name="payment_count" widget="statinfo" string="Payments"/>
+                            </button>
+                            <button name="action_view_time_sheet"
+                                    type="object"
+                                    icon="fa-clock-o"
+                                    class="oe_stat_button"
+                                    attrs="{'invisible': [('is_maintain_timesheet', '=', False)]}">
+                                <field name="timesheet_count" widget="statinfo" string="Timesheet"/>
                             </button>
                         </div>
                         <div class="oe_title">
@@ -47,7 +67,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_id" required="1"/>
+                                <field name="partner_id" required="1" domain="[('customer_rank','>', 0)]"/>
                                 <field name="project_id" required="1"/>
 
                                 <label for="from_date" string="Contract Duration" id="label_dates"/>
@@ -66,7 +86,7 @@
                                 <field name="hr_responsible_id"/>
                                 <field name="company_id"/>
                                 <field name="is_maintain_timesheet"/>
-                                <field name="wage" invisible="0"/>
+                                <field name="wage" invisible="1"/>
                             </group>
 
                             <group>
@@ -80,10 +100,6 @@
                         <notebook>
                             <page name="description_page" string="Description">
                                 <field name="description" type="html" options="{'collaborative': true}"/>
-                            </page>
-                            <page name="Timesheet" string="Timesheet"
-                                  attrs="{'invisible': [('is_maintain_timesheet', '=', False)]}">
-                                <field name="timesheet_ids" readonly="1"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -104,9 +120,14 @@
         <menuitem
                 id="menu_customer_contract_root"
                 name="Customer Contract"
-                action="customer_contract_action"
                 parent="project.menu_main_pm"
         />
+
+        <menuitem
+                id="menu_customer_contract_sub_root"
+                name="Customer Contract"
+                action="customer_contract_action"
+                parent="menu_customer_contract_root"/>
 
     </data>
 </odoo>
