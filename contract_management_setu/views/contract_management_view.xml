@@ -33,7 +33,7 @@
                                     type="object"
                                     class="oe_stat_button"
                                     icon="fa-pencil-square-o"
-                                    attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                                   >
                                 <field name="invoice_count" widget="statinfo" string="Invoices"/>
                             </button>
                         </div>
@@ -71,11 +71,11 @@
 
                             <group>
                                 <field name="contract_uom" required="1"/>
-                                <field name="hours_per_day"/>
-                                <field name="contract_quantity"/>
-                                <field name="total_contract_service_hours" readonly="1"/>
+                                <field name="hours_per_day" />
+                                <field name="contract_quantity" required="1"/>
+                                <field name="total_contract_service_hours" readonly="1" store="False"/>
                                 <field name="remaining_quantity" readonly="1"/>
-                                <field name="used_quantity" widget="progressbar"/>
+                                <field name="utilised_quantity" widget="progressbar"/>
                             </group>
                         </group>
                         <notebook>

@@ -7,7 +7,7 @@ class HrContract(models.Model):
 
     partner_id = fields.Many2one("res.partner", string="Customer", tracking=1)
     project_id = fields.Many2one("project.project", string="Project", tracking=1)
-    contract_uom = fields.Selection([('hours', 'Hours'), ('days', 'Days')], tracking=1, copy=False)
+    contract_uom = fields.Selection([('hours', 'Hours'), ('days', 'Days')], default='days', tracking=1, copy=False)
     from_date = fields.Date(string="From Date", tracking=1, copy=False)
     to_date = fields.Date(string="To Date", tracking=1, copy=False)
     hours_per_day = fields.Float(string="Hours Per Day", tracking=1, copy=False)
@@ -15,11 +15,12 @@ class HrContract(models.Model):
                                                 compute='_compute_total_contract_service_hours')
     contract_quantity = fields.Float(string="Contract Quantity", tracking=1, copy=False)
     remaining_quantity = fields.Float(string="Remaining Quantity")
-    used_quantity = fields.Float(string="Used Quantity")
+    utilised_quantity = fields.Float(string="Utilised Quantity")
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
     description = fields.Html(string="Description")
     is_maintain_timesheet = fields.Boolean(string="Maintain a timesheet ?")
     timesheet_ids = fields.One2many("account.analytic.line", 'contract_id', string="Timesheet")
+
 
     @api.depends('contract_uom', 'hours_per_day', 'contract_quantity')
     def _compute_total_contract_service_hours(self):
@@ -28,15 +29,20 @@ class HrContract(models.Model):
         Use: This method is used to calculate contract service hours as per contract uom
         """
         for contract in self:
+            sum_of_unit_amount = sum(contract.timesheet_ids.mapped('unit_amount'))
             if contract.contract_uom == 'hours':
                 contract.total_contract_service_hours = contract.contract_quantity
                 contract.hours_per_day = 0.00
+
             elif contract.contract_uom == 'days':
                 contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
-            else:
-                contract.total_contract_service_hours = 0
-            if not self.timesheet_ids:
-                    contract.remaining_quantity = contract.total_contract_service_hours
+            contract.remaining_quantity = contract.total_contract_service_hours
+
+            if sum_of_unit_amount <= contract.total_contract_service_hours:
+                self.remaining_quantity = contract.total_contract_service_hours - sum_of_unit_amount
+                if contract.total_contract_service_hours and contract.remaining_quantity > -1:
+                    self.utilised_quantity = (
+                    (contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
 
     def action_view_customer_invoice(self):
         """
