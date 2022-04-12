@@ -45,6 +45,7 @@
                 name="Contract Utilization Report"
                 action="contract_utilization_report_action"
                 parent="contract_report_root"
+                sequence="2"
         />
     </data>
 </odoo>
