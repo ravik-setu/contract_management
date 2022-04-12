@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="contract_utilization_report_tree_view" model="ir.ui.view">
+            <field name="name">Contract Utilization Report Tree View</field>
+            <field name="model">hr.contract</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="from_date" string="Contract Date"/>
+                    <field name="contract_uom" string="Contract Uom"/>
+                    <field name="contract_quantity" string="Contract Quantity"/>
+                    <field name="total_contract_service_hours" string="Contract Amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="contract_utilization_report_graph_view" model="ir.ui.view">
+            <field name="name">Contract Utilization Report Graph View</field>
+            <field name="model">hr.contract</field>
+            <field name="arch" type="xml">
+                <graph>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="from_date" string="Contract Date"/>
+                    <field name="contract_uom" string="Contract Uom"/>
+                    <field name="contract_quantity" string="Contract Quantity"/>
+                    <field name="total_contract_service_hours" string="Contract Amount"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="contract_utilization_report_action">
+            <field name="name">Contract Utilization Report</field>
+            <field name="res_model">hr.contract</field>
+            <field name="view_mode">tree,graph</field>
+        </record>
+
+        <menuitem id="contract_report_root"
+                  name="Report"
+                  parent="contract_management_setu.menu_customer_contract_root"
+                  sequence="2" />
+
+        <menuitem
+                id="contract_utilization_report_action_root"
+                name="Contract Utilization Report"
+                action="contract_utilization_report_action"
+                parent="contract_report_root"
+        />
+    </data>
+</odoo>
