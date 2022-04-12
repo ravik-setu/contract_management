@@ -14,7 +14,5 @@ class AccountAnalyticLine(models.Model):
         """
         record = super(AccountAnalyticLine, self).create(vals_list)
         for timesheet in record:
-            if timesheet.project_id.contract_ids:
-                contract_id = timesheet.project_id.contract_ids[-1]
-                timesheet.contract_id = contract_id.id
+            timesheet.contract_id = timesheet.task_id.contract_id.id
         return record
