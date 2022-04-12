@@ -18,7 +18,6 @@ class HrContract(models.Model):
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
     description = fields.Html(string="Description")
     is_maintain_timesheet = fields.Boolean(string="Maintain a timesheet ?")
-    # timesheet_ids = fields.One2many("account.analytic.line", 'contract_id', string="Timesheet")
     payment_count = fields.Integer(string="Payment Count", compute='_compute_payment_count')
     timesheet_count = fields.Integer(string="Timesheet Count", compute='compute_timesheet')
 
