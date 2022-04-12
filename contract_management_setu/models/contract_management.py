@@ -1,5 +1,5 @@
-from odoo import api, fields, models
-
+from odoo import api, fields, models,_
+from odoo.exceptions import ValidationError
 
 class HrContract(models.Model):
     _name = 'hr.contract'
@@ -21,28 +21,39 @@ class HrContract(models.Model):
     is_maintain_timesheet = fields.Boolean(string="Maintain a timesheet ?")
     timesheet_ids = fields.One2many("account.analytic.line", 'contract_id', string="Timesheet")
 
-
     @api.depends('contract_uom', 'hours_per_day', 'contract_quantity')
     def _compute_total_contract_service_hours(self):
         """
         Added By: Jigna J Savaniya | Date: 6th April,2022 | Task : 600
         Use: This method is used to calculate contract service hours as per contract uom
         """
+
         for contract in self:
             sum_of_unit_amount = sum(contract.timesheet_ids.mapped('unit_amount'))
             if contract.contract_uom == 'hours':
                 contract.total_contract_service_hours = contract.contract_quantity
                 contract.hours_per_day = 0.00
-
             elif contract.contract_uom == 'days':
                 contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
             contract.remaining_quantity = contract.total_contract_service_hours
 
             if sum_of_unit_amount <= contract.total_contract_service_hours:
                 self.remaining_quantity = contract.total_contract_service_hours - sum_of_unit_amount
-                if contract.total_contract_service_hours and contract.remaining_quantity > -1:
-                    self.utilised_quantity = (
-                    (contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
+            if contract.total_contract_service_hours and contract.remaining_quantity > -1:
+                self.utilised_quantity = (
+                (contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
+
+
+    @api.constrains('contract_quantity','timesheet_ids')
+    def check_contract_quantity(self):
+        """
+        Added By:Nidhi Dhruv | Date: 11th April,2022 | Task : 610
+        Use:  Generates Error if contract_quantity is decreased then the mentioned contract_quantity
+        """
+        for contract in self:
+            sum_of_unit_amount = sum(contract.timesheet_ids.mapped('unit_amount'))
+            if self.contract_quantity < sum_of_unit_amount or sum_of_unit_amount > contract.total_contract_service_hours:
+                raise ValidationError(_("Cannot descrease the Contract Quantity as timesheet already exists "))
 
     def action_view_customer_invoice(self):
         """
