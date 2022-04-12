@@ -22,6 +22,12 @@ class HrContract(models.Model):
     payment_count = fields.Integer(string="Payment Count", compute='_compute_payment_count')
     timesheet_count = fields.Integer(string="Timesheet Count", compute='compute_timesheet')
 
+    task_ids = fields.One2many('project.task', 'contract_id', string="Tasks")
+    task_count = fields.Integer(string='Tasks', compute='_compute_task_count')
+    expiry_status = fields.Selection([
+        ('running', 'Running'), ('near_to_expire', 'Near To Expire'), ('expired', 'Expired')],
+        string="Expiry Status", compute="_compute_expiry_status", store=True)
+
     @api.depends('contract_uom', 'hours_per_day', 'contract_quantity')
     def _compute_total_contract_service_hours(self):
         """
@@ -36,19 +42,18 @@ class HrContract(models.Model):
                 contract.hours_per_day = 0.00
             elif contract.contract_uom == 'days':
                 contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
-            contract.remaining_quantity = contract.total_contract_service_hours
 
+            contract.remaining_quantity = contract.total_contract_service_hours
             if sum_of_unit_amount <= contract.total_contract_service_hours:
                 self.remaining_quantity = contract.total_contract_service_hours - sum_of_unit_amount
             if contract.total_contract_service_hours and contract.remaining_quantity > -1:
                 self.utilised_quantity = (
                 (contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
 
-
-    @api.constrains('contract_quantity','timesheet_ids')
+    @api.constrains('contract_quantity', 'timesheet_ids')
     def check_contract_quantity(self):
         """
-        Added By:Nidhi Dhruv | Date: 11th April,2022 | Task : 610
+        Added By: Nidhi Dhruv | Date: 11th April,2022 | Task : 610
         Use:  Generates Error if contract_quantity is decreased then the mentioned contract_quantity
         """
         for contract in self:
@@ -146,3 +151,42 @@ class HrContract(models.Model):
         Use: This method is used to get timesheet ids based on contract
         """
         return self.env['account.analytic.line'].search([('contract_id', '=', self.id)]).ids
+
+    def _compute_task_count(self):
+        """
+        Added By: Mitrarajsinh Jadeja | Date: 11th April,2022 | Task : 653
+        Use: This method will count the task for the Contract
+        """
+        for contract in self:
+            contract.task_count = len(contract.task_ids)
+
+    def action_view_tasks(self):
+        """
+        Added By: Mitrarajsinh Jadeja | Date: 11th April,2022 | Task : 653
+        Use: This method will count the task related to particular Contract
+             Pass default value to create task under that project/contract
+        """
+        action = self.env["ir.actions.actions"]._for_xml_id("project.action_view_all_task")
+        action['domain'] = [('id', 'in', self.task_ids.ids)]
+        action['context'] = {
+            'default_project_id': self.project_id.id,
+            'default_contract_id': self.id
+        }
+        return action
+
+    @api.depends('remaining_quantity')
+    def _compute_expiry_status(self):
+        """
+        Added By: Mitrarajsinh Jadeja | Date: 11th April,2022 | Task : 653
+        Use: This method will set the expiry status for the contract
+        """
+        for contract in self:
+            contract_expire_percent = contract.project_id.expire_percent
+            contract_used = contract.total_contract_service_hours and (
+                        contract.used_quantity / contract.total_contract_service_hours)
+            if contract_expire_percent < contract_used < 1:
+                contract.expiry_status = 'near_to_expire'
+            elif contract_used == 1:
+                contract.expiry_status = 'expired'
+            else:
+                contract.expiry_status = 'running'

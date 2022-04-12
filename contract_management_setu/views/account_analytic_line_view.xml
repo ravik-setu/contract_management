@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- Search View -->
+        <record id="contract_management_setu_inherited_account_analytic_line_search" model="ir.ui.view">
+            <field name="name">contract_management_setu_inherited_account_analytic_line_search</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/group" position="inside">
+                    <filter string="Contract" name="contract_id" domain="[]"
+                            context="{'group_by': 'contract_id'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,11 +1,16 @@
-from odoo import fields, models, api
+# -*- coding: utf-8 -*-
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 
-class Project(models.Model):
+class ProjectProject(models.Model):
     _inherit = 'project.project'
 
     contract_invoice_count = fields.Integer(compute='_compute_contract_invoice_count', string="Contract Invoice Count")
     contract_count = fields.Integer(string="Contract", compute="_compute_project_contract")
+    expire_percent = fields.Float(string="Expiry Percent",
+                                  help="By this percentage, Contract/Project expiry status can be identify.")
+    is_contract_use = fields.Boolean(string="Is Contract Use?", default=True)
 
     def action_view_customer_invoice(self):
         """
@@ -55,3 +60,21 @@ class Project(models.Model):
         Use: This method is used to get contract ids based on project
         """
         return self.env["hr.contract"].search([('project_id', '=', self.id)]).ids
+
+    @api.constrains('expire_percent')
+    def check_progress_percent(self):
+        """
+        Added By: Mitrarajsinh Jadeja | Date: 11th April,2022 | Task : 653
+        Use: Allowing only expiry percentage between 0 to 100
+        """
+        for project in self:
+            if not (0 <= project.expire_percent <= 1):
+                raise UserError(_('Expiry Percentage should be between 0 to 100 !!'))
+
+    def get_latest_contract(self):
+        """
+        Added By: Mitrarajsinh Jadeja | Date: 11th April,2022 | Task : 653
+        Use: This method will give the latest contract for the project.
+        """
+        contract_ids = self.contract_ids.filtered(lambda contract: contract.state == 'open')
+        return contract_ids and contract_ids[0] or contract_ids

@@ -12,7 +12,9 @@
         'views/project_project_view.xml',
         'views/account_move_view.xml',
         'views/res_partner_view.xml',
-        'views/contract_utilization_report.xml'
+        'views/contract_utilization_report.xml',
+        'views/project_task_view.xml',
+        'views/account_analytic_line_view.xml',
     ],
     'demo': [
     ],

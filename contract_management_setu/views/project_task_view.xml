@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <!-- Form View -->
+        <record id="contract_management_setu_inherited_project_task_form" model="ir.ui.view">
+            <field name="name">contract_management_setu_inherited_project_task_form</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="contract_id" domain="[('project_id', '=', project_id), ('state', '=', 'open')]"
+                           required="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Kanban Create Form View -->
+        <record id="contract_management_setu_inherited_project_create_task_form" model="ir.ui.view">
+            <field name="name">contract_management_setu_inherited_project_create_task_form</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.quick_create_task_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/group//field[@name='name']" position="after">
+                    <field name="project_id" invisible="1"/>
+                    <field name="is_contract_use" invisible="1"/>
+                    <field name="contract_id" attrs="{'invisible': [('is_contract_use', '=', False)]}"
+                           domain="[('project_id', '=', project_id), ('state', '=', 'open')]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="contract_management_setu_inherited_project_task_search" model="ir.ui.view">
+            <field name="name">contract_management_setu_inherited_project_task_search</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_search_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/group" position="inside">
+                    <filter string="Contract" name="contract_id" domain="[]" context="{'group_by': 'contract_id'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
