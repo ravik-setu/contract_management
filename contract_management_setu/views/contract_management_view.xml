@@ -53,8 +53,9 @@
 
                             <button name="action_view_time_sheet" type="object"
                                     icon="fa-clock-o" class="oe_stat_button"
-                                    attrs="{'invisible': [('is_maintain_timesheet', '=', False)]}"/>
+                                    attrs="{'invisible': [('is_maintain_timesheet', '=', False)]}">
                             <field name="timesheet_count" widget="statinfo" string="Timesheet"/>
+                            </button>
 
                             <button name="action_view_tasks" type="object" class="oe_stat_button"
                                     icon="fa-solid fa-file">
