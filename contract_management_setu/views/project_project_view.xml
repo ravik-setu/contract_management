@@ -6,25 +6,29 @@
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.edit_project"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='settings']" position="after">
-                    <page name="Contracts" string="Contracts">
-                        <field name="contract_ids" readonly="1">
-                            <tree>
-                                <field name="name"/>
-                                <field name="partner_id"/>
-                                <field name="project_id" optional="hide"/>
-                                <field name="from_date"/>
-                                <field name="to_date"/>
-                                <field name="contract_uom"/>
-                                <field name="hours_per_day"/>
-                                <field name="total_contract_service_hours"/>
-                                <field name="contract_quantity"/>
-                                <field name="remaining_quantity"/>
-                                <field name="hr_responsible_id" optional="hide"/>
-                                <field name="company_id" optional="hide"/>
-                            </tree>
-                        </field>
-                    </page>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button class="oe_stat_button" name="action_view_customer_invoice" type="object"
+                            icon="fa-pencil-square-o">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="contract_invoice_count"/>
+                            </span>
+                            <span class="o_stat_text">
+                                Contract Invoice
+                            </span>
+                        </div>
+                    </button>
+                    <button class="oe_stat_button" name="action_view_customer_contract" type="object"
+                            icon="fa-pencil-square-o">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="contract_count"/>
+                            </span>
+                            <span class="o_stat_text">
+                                Customer Contract
+                            </span>
+                        </div>
+                    </button>
                 </xpath>
             </field>
         </record>
