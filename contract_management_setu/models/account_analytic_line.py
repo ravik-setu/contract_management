@@ -1,5 +1,4 @@
-from odoo import fields, models, _
-from odoo.exceptions import ValidationError
+from odoo import fields, models, api
 
 
 class AccountAnalyticLine(models.Model):
@@ -7,21 +6,14 @@ class AccountAnalyticLine(models.Model):
 
     contract_id = fields.Many2one("hr.contract", string="Contract")
 
-    def write(self, vals):
+    @api.model
+    def create(self, vals_list):
         """
-        Added By:Nidhi Dhruv | Date: 7th April,2022 | Task : 610
-        Use: 1)To get the last record of contract
-            2) Generates Error if sum_of_unit_amount exceeds the total_contract_service_hours
-          """
-        for timesheet in self:
+                Added By:Nidhi Dhruv | Date: 11th April,2022 | Task : 610
+                Use: To get the last record of contract
+        """
+        record = super(AccountAnalyticLine, self).create(vals_list)
+        for timesheet in record:
             if timesheet.project_id.contract_ids:
                 contract_id = timesheet.project_id.contract_ids[-1]
-                sum_of_unit_amount = sum(contract_id.timesheet_ids.mapped('unit_amount'))
-                if sum_of_unit_amount > contract_id.total_contract_service_hours:
-                    raise ValidationError(_("NOT ALLLOWED."))
-                else:
-                    vals.update({
-                        'contract_id': contract_id
-                    })
-                    super(AccountAnalyticLine, self).write(vals)
-        return True
+                timesheet.contract_id = contract_id.id,
