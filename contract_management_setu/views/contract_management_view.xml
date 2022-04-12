@@ -37,22 +37,16 @@
                     </header>
                     <sheet string="Budget">
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_view_customer_invoice"
-                                    type="object"
-                                    class="oe_stat_button"
-                                    icon="fa-pencil-square-o">
+                            <button name="action_view_customer_invoice" type="object"
+                                    class="oe_stat_button" icon="fa-pencil-square-o">
                                 <field name="invoice_count" widget="statinfo" string="Invoices"/>
                             </button>
-                            <button name="action_view_customer_payment"
-                                    type="object"
-                                    class="oe_stat_button"
-                                    icon="fa-credit-card">
+                            <button name="action_view_customer_payment" type="object"
+                                    class="oe_stat_button" icon="fa-credit-card">
                                 <field name="payment_count" widget="statinfo" string="Payments"/>
                             </button>
-                            <button name="action_view_time_sheet"
-                                    type="object"
-                                    icon="fa-clock-o"
-                                    class="oe_stat_button"
+                            <button name="action_view_time_sheet" type="object"
+                                    icon="fa-clock-o" class="oe_stat_button"
                                     attrs="{'invisible': [('is_maintain_timesheet', '=', False)]}">
                                 <field name="timesheet_count" widget="statinfo" string="Timesheet"/>
                             </button>
@@ -91,11 +85,11 @@
 
                             <group>
                                 <field name="contract_uom" required="1"/>
-                                <field name="hours_per_day"/>
-                                <field name="contract_quantity"/>
-                                <field name="total_contract_service_hours" readonly="1"/>
+                                <field name="hours_per_day" />
+                                <field name="contract_quantity" required="1"/>
+                                <field name="total_contract_service_hours" readonly="1" store="False"/>
                                 <field name="remaining_quantity" readonly="1"/>
-                                <field name="used_quantity" widget="progressbar"/>
+                                <field name="utilised_quantity" widget="progressbar"/>
                             </group>
                         </group>
                         <notebook>
