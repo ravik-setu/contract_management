@@ -9,11 +9,12 @@ class AccountAnalyticLine(models.Model):
     @api.model
     def create(self, vals_list):
         """
-                Added By:Nidhi Dhruv | Date: 11th April,2022 | Task : 610
-                Use: To get the last record of contract
+        Added By:Nidhi Dhruv | Date: 12th April,2022 | Task : 610
+        Use: To get the last record of contract
         """
         record = super(AccountAnalyticLine, self).create(vals_list)
         for timesheet in record:
             if timesheet.project_id.contract_ids:
                 contract_id = timesheet.project_id.contract_ids[-1]
-                timesheet.contract_id = contract_id.id,
+                timesheet.contract_id = contract_id.id
+        return record
