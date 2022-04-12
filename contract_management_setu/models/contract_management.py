@@ -19,6 +19,7 @@ class HrContract(models.Model):
     invoice_count = fields.Integer(string='Invoice Count', compute='_compute_invoice_count')
     description = fields.Html(string="Description")
     is_maintain_timesheet = fields.Boolean(string="Maintain a timesheet ?")
+    timesheet_ids = fields.One2many("account.analytic.line", 'contract_id', string="Timesheet")
     payment_count = fields.Integer(string="Payment Count", compute='_compute_payment_count')
     timesheet_count = fields.Integer(string="Timesheet Count", compute='compute_timesheet')
 
@@ -183,7 +184,7 @@ class HrContract(models.Model):
         for contract in self:
             contract_expire_percent = contract.project_id.expire_percent
             contract_used = contract.total_contract_service_hours and (
-                        contract.used_quantity / contract.total_contract_service_hours)
+                        contract.utilised_quantity / contract.total_contract_service_hours)
             if contract_expire_percent < contract_used < 1:
                 contract.expiry_status = 'near_to_expire'
             elif contract_used == 1:

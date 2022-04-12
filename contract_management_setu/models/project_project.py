@@ -76,5 +76,6 @@ class ProjectProject(models.Model):
         Added By: Mitrarajsinh Jadeja | Date: 11th April,2022 | Task : 653
         Use: This method will give the latest contract for the project.
         """
-        contract_ids = self.contract_ids.filtered(lambda contract: contract.state == 'open')
+        contract_ids = self.env['hr.contract'].search([('project_id', '=', self.id)])
+        contract_ids = contract_ids.filtered(lambda contract: contract.state == 'open')
         return contract_ids and contract_ids[0] or contract_ids
