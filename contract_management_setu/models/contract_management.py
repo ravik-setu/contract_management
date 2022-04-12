@@ -1,5 +1,5 @@
 from odoo import api, fields, models,_
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 class HrContract(models.Model):
     _name = 'hr.contract'
@@ -167,6 +167,9 @@ class HrContract(models.Model):
         Use: This method will count the task related to particular Contract
              Pass default value to create task under that project/contract
         """
+        if not self.task_ids and self.state == 'draft':
+            raise UserError('There is no Task in the Contract.\n'
+                            'Please move contract to `Running` status to create task.')
         action = self.env["ir.actions.actions"]._for_xml_id("project.action_view_all_task")
         action['domain'] = [('id', 'in', self.task_ids.ids)]
         action['context'] = {
