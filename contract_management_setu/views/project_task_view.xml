@@ -8,8 +8,7 @@
             <field name="inherit_id" ref="project.view_task_form2"/>
             <field name="arch" type="xml">
                 <field name="parent_id" position="after">
-                    <field name="contract_id" domain="[('project_id', '=', project_id), ('state', '=', 'open')]"
-                           required="1"/>
+                    <field name="contract_id" domain="[('project_id', '=', project_id), ('state', '=', 'open')]"/>
                 </field>
             </field>
         </record>

@@ -7,7 +7,7 @@ class ProjectTask(models.Model):
     """ This model is added to give relation between Task and Contract"""
     _inherit = 'project.task'
 
-    contract_id = fields.Many2one('hr.contract', string="Contract")
+    contract_id = fields.Many2one('hr.contract', string="Contract", tracking=1)
     is_contract_use = fields.Boolean(string="Is Contract Use?", related="project_id.is_contract_use", store=True)
 
     @api.onchange('project_id')

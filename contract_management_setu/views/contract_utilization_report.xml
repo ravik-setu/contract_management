@@ -33,6 +33,7 @@
             <field name="name">Contract Utilization Report</field>
             <field name="res_model">hr.contract</field>
             <field name="view_mode">tree,graph</field>
+            <field name="view_id" ref="contract_utilization_report_tree_view"/>
         </record>
 
         <menuitem id="contract_report_root"

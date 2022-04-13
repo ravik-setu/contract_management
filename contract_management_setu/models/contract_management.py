@@ -12,7 +12,7 @@ class HrContract(models.Model):
     to_date = fields.Date(string="To Date", tracking=1, copy=False)
     hours_per_day = fields.Float(string="Hours Per Day", tracking=1, copy=False)
     total_contract_service_hours = fields.Float(string="Total Contract Service Hours",
-                                                compute='_compute_total_contract_service_hours')
+                                                compute='_compute_total_contract_service_hours', store=True)
     contract_quantity = fields.Float(string="Contract Quantity", tracking=1, copy=False)
     remaining_quantity = fields.Float(string="Remaining Quantity")
     utilised_quantity = fields.Float(string="Utilised Quantity")
@@ -29,26 +29,25 @@ class HrContract(models.Model):
         ('running', 'Running'), ('near_to_expire', 'Near To Expire'), ('expired', 'Expired')],
         string="Expiry Status", compute="_compute_expiry_status", store=True)
 
-    @api.depends('contract_uom', 'hours_per_day', 'contract_quantity')
+    @api.depends('contract_uom', 'hours_per_day', 'contract_quantity', 'timesheet_ids.unit_amount')
     def _compute_total_contract_service_hours(self):
         """
         Added By: Jigna J Savaniya | Date: 6th April,2022 | Task : 600
         Use: This method is used to calculate contract service hours as per contract uom
         """
-
         for contract in self:
-            sum_of_unit_amount = sum(contract.timesheet_ids.mapped('unit_amount'))
             if contract.contract_uom == 'hours':
                 contract.total_contract_service_hours = contract.contract_quantity
                 contract.hours_per_day = 0.00
             elif contract.contract_uom == 'days':
                 contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
 
+            sum_of_unit_amount = sum(contract.timesheet_ids.mapped('unit_amount'))
             contract.remaining_quantity = contract.total_contract_service_hours
             if sum_of_unit_amount <= contract.total_contract_service_hours:
-                self.remaining_quantity = contract.total_contract_service_hours - sum_of_unit_amount
+                contract.remaining_quantity = contract.total_contract_service_hours - sum_of_unit_amount
             if contract.total_contract_service_hours and contract.remaining_quantity > -1:
-                self.utilised_quantity = (
+                contract.utilised_quantity = (
                 (contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
 
     @api.constrains('contract_quantity', 'timesheet_ids')
@@ -178,7 +177,7 @@ class HrContract(models.Model):
         }
         return action
 
-    @api.depends('remaining_quantity')
+    @api.depends('remaining_quantity', 'utilised_quantity')
     def _compute_expiry_status(self):
         """
         Added By: Mitrarajsinh Jadeja | Date: 11th April,2022 | Task : 653
@@ -186,8 +185,7 @@ class HrContract(models.Model):
         """
         for contract in self:
             contract_expire_percent = contract.project_id.expire_percent
-            contract_used = contract.total_contract_service_hours and (
-                        contract.utilised_quantity / contract.total_contract_service_hours)
+            contract_used = contract.utilised_quantity and (contract.utilised_quantity / 100)
             if contract_expire_percent < contract_used < 1:
                 contract.expiry_status = 'near_to_expire'
             elif contract_used == 1:
