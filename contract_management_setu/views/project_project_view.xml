@@ -14,7 +14,7 @@
 
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button class="oe_stat_button" name="action_view_customer_invoice" type="object"
-                            icon="fa-pencil-square-o">
+                            icon="fa-pencil-square-o" attrs="{'invisible': [('is_contract_use', '=', False)]}">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_value">
                                 <field name="contract_invoice_count"/>
@@ -25,13 +25,13 @@
                         </div>
                     </button>
                     <button class="oe_stat_button" name="action_view_customer_contract" type="object"
-                            icon="fa-pencil-square-o">
+                            icon="fa-file-text  fa-file-contract" attrs="{'invisible': [('is_contract_use', '=', False)]}">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_value">
                                 <field name="contract_count"/>
                             </span>
                             <span class="o_stat_text">
-                                Customer Contract
+                                Contract
                             </span>
                         </div>
                     </button>

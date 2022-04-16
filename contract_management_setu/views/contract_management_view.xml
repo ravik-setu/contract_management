@@ -54,7 +54,7 @@
                             <button name="action_view_time_sheet" type="object"
                                     icon="fa-clock-o" class="oe_stat_button"
                                     attrs="{'invisible': [('is_maintain_timesheet', '=', False)]}">
-                            <field name="timesheet_count" widget="statinfo" string="Timesheet"/>
+                                <field name="timesheet_count" widget="statinfo" string="Timesheet"/>
                             </button>
 
                             <button name="action_view_tasks" type="object" class="oe_stat_button"
@@ -88,7 +88,7 @@
                                            options="{'related_start_date': 'from_date'}"/>
                                 </div>
 
-                                <field name="hr_responsible_id"/>
+                                <field name="hr_responsible_id" string="Responsible"/>
                                 <field name="company_id"/>
                                 <field name="is_maintain_timesheet"/>
                                 <field name="wage" invisible="1"/>
@@ -96,7 +96,7 @@
 
                             <group>
                                 <field name="contract_uom" required="1"/>
-                                <field name="hours_per_day" />
+                                <field name="hours_per_day" attrs="{'invisible': [('contract_uom', '!=', 'days')]}"/>
                                 <field name="contract_quantity" required="1"/>
                                 <field name="total_contract_service_hours" readonly="1" store="False"/>
                                 <field name="remaining_quantity" readonly="1"/>

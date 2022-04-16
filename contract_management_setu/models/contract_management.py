@@ -1,12 +1,14 @@
-from odoo import api, fields, models,_
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
+
 
 class HrContract(models.Model):
     _name = 'hr.contract'
     _inherit = ['hr.contract', 'mail.thread', 'mail.activity.mixin']
 
     partner_id = fields.Many2one("res.partner", string="Customer", tracking=1)
-    project_id = fields.Many2one("project.project", string="Project", tracking=1)
+    project_id = fields.Many2one("project.project", string="Project", tracking=1,
+                                 domain="[('partner_id', '=', partner_id)]")
     contract_uom = fields.Selection([('hours', 'Hours'), ('days', 'Days')], default='days', tracking=1, copy=False)
     from_date = fields.Date(string="From Date", tracking=1, copy=False)
     to_date = fields.Date(string="To Date", tracking=1, copy=False)
@@ -48,7 +50,8 @@ class HrContract(models.Model):
                 contract.remaining_quantity = contract.total_contract_service_hours - sum_of_unit_amount
             if contract.total_contract_service_hours and contract.remaining_quantity > -1:
                 contract.utilised_quantity = (
-                (contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
+                                                     (
+                                                             contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
 
     @api.constrains('contract_quantity', 'timesheet_ids')
     def check_contract_quantity(self):
@@ -192,3 +195,15 @@ class HrContract(models.Model):
                 contract.expiry_status = 'expired'
             else:
                 contract.expiry_status = 'running'
+
+    @api.model
+    def default_get(self, fields):
+        res = super(HrContract, self).default_get(fields)
+        context = self.env.context
+        if context.get('active_model') == 'project.project':
+            project = self.env["project.project"].browse(context.get('active_id'))
+            res.update({'partner_id': project.partner_id.id, 'project_id': project.id})
+        if context.get('active_model') == 'res.partner':
+            res.update({'partner_id': context.get('active_id')})
+        return res
+

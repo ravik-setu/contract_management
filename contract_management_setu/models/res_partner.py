@@ -9,11 +9,10 @@ class Partner(models.Model):
     def action_view_customer_contract(self):
         """
         Added By: Jigna J Savaniya | Date: 6th April,2022 | Task : 600
-        Use: This method is used to show contracts of perticular partner
+        Use: This method is used to show contracts of particular partner
         """
         action = self.env["ir.actions.actions"]._for_xml_id("contract_management_setu.customer_contract_action")
-        contract_ids = self.env['hr.contract'].search([('partner_id', '=', self.contract_ids.partner_id.id)])
-        action['domain'] = [('id', 'in', contract_ids.ids)]
+        action['domain'] = [('id', 'in', self.get_customer_contract().ids)]
         return action
 
     def _compute_contract_count(self):
@@ -22,5 +21,7 @@ class Partner(models.Model):
         Use: This method is used to count contract as per partner
         """
         for partner in self:
-            contract = self.env['hr.contract'].search([('partner_id', '=', partner.id)])
-            partner.contract_count = len(contract)
+            partner.contract_count = len(partner.get_customer_contract())
+
+    def get_customer_contract(self):
+        return self.env['hr.contract'].search([('partner_id', '=', self.id)])

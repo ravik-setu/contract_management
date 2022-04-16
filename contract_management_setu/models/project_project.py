@@ -10,7 +10,7 @@ class ProjectProject(models.Model):
     contract_count = fields.Integer(string="Contract", compute="_compute_project_contract")
     expire_percent = fields.Float(string="Expiry Percent",
                                   help="By this percentage, Contract/Project expiry status can be identify.")
-    is_contract_use = fields.Boolean(string="Is Contract Use?", default=True)
+    is_contract_use = fields.Boolean(string="Manage Contract", default=False)
 
     def action_view_customer_invoice(self):
         """
