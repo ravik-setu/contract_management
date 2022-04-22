@@ -44,14 +44,9 @@ class HrContract(models.Model):
             elif contract.contract_uom == 'days':
                 contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
 
-            sum_of_unit_amount = sum(contract.timesheet_ids.mapped('unit_amount'))
-            contract.remaining_quantity = contract.total_contract_service_hours
-            if sum_of_unit_amount <= contract.total_contract_service_hours:
-                contract.remaining_quantity = contract.total_contract_service_hours - sum_of_unit_amount
-            if contract.total_contract_service_hours and contract.remaining_quantity > -1:
-                contract.utilised_quantity = (
-                                                     (
-                                                             contract.total_contract_service_hours - contract.remaining_quantity) / contract.total_contract_service_hours) * 100
+            total_timesheet = sum(contract.timesheet_ids.mapped('unit_amount'))
+            contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
+            contract.utilised_quantity = (total_timesheet / contract.total_contract_service_hours) * 100
 
     @api.constrains('contract_quantity', 'timesheet_ids')
     def check_contract_quantity(self):
