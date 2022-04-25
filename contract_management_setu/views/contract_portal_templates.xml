@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_my_home_menu_contracts" name="portal layout : contracts menu entries"
+              inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'contract'" t-attf-class="breadcrumb-item #{'active ' if not data1 else ''}">
+                <a t-if="data1" t-attf-href="/my/contracts">Contracts</a>
+                <t t-else="">Contracts</t>
+            </li>
+            <li t-if="data1" class="breadcrumb-item active">
+                <a t-if="invoices or payments or timesheet" t-att-href="'/my/contracts/%s'%data1.id">
+                    <t t-esc="data1.name" t-if="data1.name != '/'"/>
+                </a>
+                <t t-else="">
+                    <t t-esc="data1.name"/>
+                </t>
+            </li>
+            <li t-if="invoices" class="breadcrumb-item active">
+                Invoices
+            </li>
+            <li t-if="payments" class="breadcrumb-item active">
+                payments
+            </li>
+        </xpath>
+    </template>
+    <template id="portal_my_home_contract" name="contracts" inherit_id="portal.portal_my_home" priority="85">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Contracts</t>
+                <t t-set="url" t-value="'/my/contracts'"/>
+                <t t-set="placeholder_count" t-value="'contract_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_contracts" name="My Contracts">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Contracts</t>
+            </t>
+            <t t-if="not data">
+                <p>There are currently no contracts for your account.</p>
+            </t>
+            <t t-if="data" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th class="text-center">Contracts Reference</th>
+                        <th class="text-center">Projects</th>
+                        <th class="text-center">Contract Start Date</th>
+                        <th class="text-center">Contract End Date</th>
+                        <th class="text-center">Hours Per Day</th>
+                        <th class="text-center">Contract Quantity</th>
+                        <th class="text-center">Total Contract Service</th>
+                    </tr>
+                </thead>
+                <t t-foreach="data" t-as="data">
+                    <tr>
+                        <td class="text-center">
+                            <a t-att-href="'/my/contracts/%s' %data.id">
+                                <span t-field="data.name"/>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="data.sudo().project_id.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="data.from_date"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="data.to_date"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="data.hours_per_day"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="data.contract_quantity"/>
+                            <span t-field="data.contract_uom"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="data.total_contract_service_hours"/> hours
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- contract page view -->
+    <template id="contract_portal_template" name="contract portal template" inherit_id="portal.portal_sidebar"
+              primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <div class="card pb-5">
+                <div class="pb-2 pt-3 card-header bg-white d-flex justify-content-end">
+                    <a class="btn btn-secondary mr-4" t-att-href="'%s/invoices' %data1.id">
+                        <li class="fa fa-fw o_button_icon fa-pencil-square-o"/>
+                        Invoice(<t t-esc="data1.invoice_count"/>)
+                    </a>
+                    <a class="btn btn-secondary mr-4" t-att-href="'%s/payments' %data1.id">
+                        <li class="fa fa-fw o_button_icon fa-credit-card"/>
+                        Payments(<t t-esc="data1.payment_count"/>)
+                    </a>
+                    <a class="btn btn-secondary mr-4" t-att-href="'%s/timesheet' %data1.id">
+                        <li class="fa fa-fw o_button_icon fa-clock-o"/>
+                        Timesheet(<t t-esc="data1.sudo().timesheet_count"/>)
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6" id="hash_data_consistency_table">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Contract Reference :
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Customer :
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.partner_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Project :
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.sudo().project_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            From Date:
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.sudo().from_date"/>
+                                        </td>
+                                        <td>
+                                            To Date:
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.to_date"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            HR Responsible :
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.name"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6" id="hash_data_consistency_table">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Contract UOM :
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.contract_uom"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Hours Per Day :
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.hours_per_day"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Contract Qty. :
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.contract_quantity"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Total Contract Service Hours:
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.total_contract_service_hours"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Remaining Qty.
+                                        </td>
+                                        <td>
+                                            <span t-field="data1.remaining_quantity"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_contracts_payments" name="My Contracts">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Payments</t>
+            </t>
+            <t t-if="not payments">
+                <p>There are currently no payments for your account.</p>
+            </t>
+            <t t-if="payments" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Name</th>
+                        <th class="text-center">Journal</th>
+                        <th class="text-center">Payment Method</th>
+                        <th class="text-center">Customer</th>
+                        <th class="text-center">Amount</th>
+                        <th class="text-center">status</th>
+                    </tr>
+                </thead>
+                <t t-foreach="payments" t-as="payments">
+                    <tr>
+                        <td class="text-center">
+                            <span t-field="payments.date"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="payments.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="payments.journal_id.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="payments.payment_method_line_id.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="payments.partner_id.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="payments.amount"/>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-pill badge-success">
+
+                                <span class="d-none d-md-inline" t-field="payments.state"/>
+                            </span>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="portal_my_contracts_timesheets" name="My Contracts">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">timesheet</t>
+            </t>
+            <t t-if="not timesheet">
+                <p>There are currently no payments for your account.</p>
+            </t>
+            <t t-if="timesheet" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th class="text-center">Date</th>
+                        <th class="text-center">Project</th>
+                        <th class="text-center">Task</th>
+                        <th class="text-center">Description</th>
+                        <th class="text-center">Hours Spent</th>
+                    </tr>
+                </thead>
+                <t t-foreach="timesheet" t-as="timesheet">
+                    <tr>
+                        <td class="text-center">
+                            <span t-field="timesheet.date"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="timesheet.project_id.name"/>
+                        </td>
+
+                        <td class="text-center">
+                            <span t-field="timesheet.task_id.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="timesheet.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="timesheet.unit_amount"/>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

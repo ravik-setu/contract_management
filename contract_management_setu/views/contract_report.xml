@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_menu_reports" inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'reports'" t-attf-class="breadcrumb-item #{'active ' if not contract else ''}">
+                <a t-if="contract" t-attf-href="/my/reports">Reports</a>
+                <t t-else="">Reports</t>
+            </li>
+            <li t-if="contract" class="breadcrumb-item active">
+                Reports
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_report" name="reports" inherit_id="portal.portal_my_home" priority="90">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Reports</t>
+                <t t-set="url" t-value="'/my/reports'"/>
+            </t>
+        </xpath>
+    </template>
+    <template id="portal_my_reports" name="My Reports">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Reports</t>
+            </t>
+            <t t-if="not contract">
+                <p>There are currently no contracts reports for your account.</p>
+            </t>
+            <t t-if="contract" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th class="text-center">Contract Date</th>
+                        <th class="text-center">Contract Qty</th>
+                        <th class="text-center">Total Contract Service</th>
+                        <!--                        <th class="text-center">Contract Amount</th>-->
+                        <th class="text-center">Timesheet Hours</th>
+                        <th class="text-center">Contract Utilised</th>
+                    </tr>
+                </thead>
+                <t t-foreach="contract" t-as="contract">
+                    <tr>
+                        <td class="text-center">
+                            <span t-field="contract.from_date"/>
+                            To
+                            <span t-field="contract.to_date"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="contract.contract_quantity"/>
+                            <span t-field="contract.contract_uom"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="contract.total_contract_service_hours"/>
+                            hours
+                        </td>
+                        <td class="text-center">
+                            <span t-esc="sum(contract.sudo().timesheet_ids.mapped('unit_amount'))"/>
+                        </td>
+                        <td class="text-center">
+                            <div class="progress">
+                                <div class="progress-bar " role="progressbar"
+                                     t-att-style="'width: %spx' %round(contract.utilised_quantity)" aria-valuenow="0"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"/>
+                            </div>
+                        </td>
+                        <!--                        <td class="text-center">-->
+                        <!--                            <span t-field="data.contract_quantity"/>-->
+                        <!--                            <span t-field="data.contract_uom"/>-->
+                        <!--                        </td>-->
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

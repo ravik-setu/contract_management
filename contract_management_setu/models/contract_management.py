@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError, UserError
 class HrContract(models.Model):
     _name = 'hr.contract'
     _inherit = ['hr.contract', 'mail.thread', 'mail.activity.mixin']
+    _order = 'id desc'
 
     partner_id = fields.Many2one("res.partner", string="Customer", tracking=1)
     project_id = fields.Many2one("project.project", string="Project", tracking=1,
@@ -46,7 +47,7 @@ class HrContract(models.Model):
 
             total_timesheet = sum(contract.timesheet_ids.mapped('unit_amount'))
             contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
-            contract.utilised_quantity = (total_timesheet / contract.total_contract_service_hours) * 100
+            contract.utilised_quantity = contract.total_contract_service_hours and (total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
 
     @api.constrains('contract_quantity', 'timesheet_ids')
     def check_contract_quantity(self):
