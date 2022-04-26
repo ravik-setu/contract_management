@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 class ProjectProject(models.Model):
     _inherit = 'project.project'
 
+    contract_ids = fields.One2many("hr.contract", 'project_id', string="contract")
     contract_invoice_count = fields.Integer(compute='_compute_contract_invoice_count', string="Contract Invoice Count")
     contract_count = fields.Integer(string="Contract", compute="_compute_project_contract")
     expire_percent = fields.Float(string="Expiry Percent",

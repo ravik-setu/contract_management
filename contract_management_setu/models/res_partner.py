@@ -13,6 +13,8 @@ class Partner(models.Model):
         """
         action = self.env["ir.actions.actions"]._for_xml_id("contract_management_setu.customer_contract_action")
         action['domain'] = [('id', 'in', self.get_customer_contract().ids)]
+        contract_ids = self.env['hr.contract'].search([('partner_id', '=', self.id)])
+        action['domain'] = [('id', 'in', contract_ids.ids)]
         return action
 
     def _compute_contract_count(self):

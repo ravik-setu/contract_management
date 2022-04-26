@@ -10,7 +10,9 @@
                     <field name="from_date" string="Contract Date"/>
                     <field name="contract_uom" string="Contract Uom"/>
                     <field name="contract_quantity" string="Contract Quantity"/>
-                    <field name="total_contract_service_hours" string="Contract Amount"/>
+                    <field name="total_contract_service_hours" string="Contract Service Hours"/>
+                    <field name="remaining_quantity" string="Remaining Quantity"/>
+                    <field name="utilised_quantity" string="Utilized Quantity"/>
                 </tree>
             </field>
         </record>
@@ -24,7 +26,9 @@
                     <field name="from_date" string="Contract Date"/>
                     <field name="contract_uom" string="Contract Uom"/>
                     <field name="contract_quantity" string="Contract Quantity"/>
-                    <field name="total_contract_service_hours" string="Contract Amount"/>
+                    <field name="total_contract_service_hours" string="Contract Service Hours"/>
+                    <field name="remaining_quantity" string="Remaining Quantity"/>
+                    <field name="utilised_quantity" string="Utilized Quantity"/>
                 </graph>
             </field>
         </record>

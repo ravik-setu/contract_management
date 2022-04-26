@@ -32,6 +32,8 @@ class HrContract(models.Model):
         ('running', 'Running'), ('near_to_expire', 'Near To Expire'), ('expired', 'Expired')],
         string="Expiry Status", compute="_compute_expiry_status", store=True)
 
+    is_allow_over_timesheet = fields.Boolean(string="Allow Timesheet")
+
     @api.depends('contract_uom', 'hours_per_day', 'contract_quantity', 'timesheet_ids.unit_amount')
     def _compute_total_contract_service_hours(self):
         """
@@ -135,6 +137,11 @@ class HrContract(models.Model):
         """
         action = self.env["ir.actions.actions"]._for_xml_id("hr_timesheet.act_hr_timesheet_line")
         action['domain'] = [('id', 'in', self.get_timesheet_of_contract())]
+        context = {
+            'default_project_id': self.project_id.id,
+            'default_contract_id': self.id
+        }
+        action['context'] = context
         return action
 
     def compute_timesheet(self):
