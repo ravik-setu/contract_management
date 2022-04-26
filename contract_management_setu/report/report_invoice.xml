@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_contract_view_pivot_analysis" model="ir.ui.view">
+        <field name="name">hr.contract.view.pivot.analysis</field>
+        <field name="model">hr.contract.report.analysis</field>
+        <field name="arch" type="xml">
+            <pivot string="Report"  disable_linking="1">
+                <field name="contract_name" type="row"/>
+                <field name="project_id" type="row"/>
+                <field name ="from_date" type="col"/>
+                <field name ="to_date" type="col"/>
+                <field name ="contract_uom" type="col"/>
+                <field name="contract_quantity" type="col"/>
+                <field name="invoice_date" type="col"/>
+                <field name="amount_total_signed" type="col"/>
+                <field name="payment_date" type="col"/>
+                <field name="payment_amount" type="col"/>
+            </pivot>
+
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_report_invoice_pivot">
+        <field name="name">Report Invoice</field>
+        <field name="res_model">hr.contract.report.analysis</field>
+        <field name="view_id" ref="hr_contract_view_pivot_analysis"/>
+        <field name="view_mode">pivot</field>
+    </record>
+
+
+    <menuitem name="Customer Report"
+              id="menu_report_customer"
+              action="action_report_invoice_pivot"
+              parent="contract_management_setu.contract_report_root"
+              sequence="3"
+    />
+
+</odoo>
+<!--Customer row-->
+
+<!--Project -->
+<!--Contract Start Date col-->
+
+<!--Contract End Date col -->
+
+<!--Contract UOM col-->
+
+<!--Contract Quantity-->
+
+<!--Invoice Date -->
+
+<!--Invoice Amount-->
+
+<!--Payment Date -->
+
+<!--Payment Amount-->
+

@@ -7,10 +7,17 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="partner_id" string="Customer"/>
+                    <field name="project_id" string="Project" optional="hide"/>
                     <field name="from_date" string="Contract Date"/>
                     <field name="contract_uom" string="Contract Uom"/>
                     <field name="contract_quantity" string="Contract Quantity"/>
                     <field name="total_contract_service_hours" string="Contract Amount"/>
+                    <field name="state"
+                           widget="badge"
+                           decoration-info="state == 'draft'"
+                           decoration-warning="state == 'close'"
+                           decoration-success="state == 'open'"/>
+
                 </tree>
             </field>
         </record>
@@ -39,7 +46,11 @@
         <menuitem id="contract_report_root"
                   name="Report"
                   parent="contract_management_setu.menu_customer_contract_root"
+<<<<<<< Updated upstream
                   sequence="2" groups="account.group_account_invoice"/>
+=======
+                  sequence="2"/>
+>>>>>>> Stashed changes
 
         <menuitem
                 id="contract_utilization_report_action_root"
