@@ -49,7 +49,12 @@ class HrContract(models.Model):
 
             total_timesheet = sum(contract.timesheet_ids.mapped('unit_amount'))
             contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
-            contract.utilised_quantity = contract.total_contract_service_hours and (total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
+            if not contract.is_allow_over_timesheet and total_timesheet > contract.total_contract_service_hours:
+                raise UserError(
+                    _("Timesheet Hours is Greater Then Contract Total Quantity ,"
+                      "\nPlease Increase Contract '{}' Quantity Or Create New Contract".format(contract.name)))
+            contract.utilised_quantity = contract.total_contract_service_hours and (
+                        total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
 
     @api.constrains('contract_quantity', 'timesheet_ids')
     def check_contract_quantity(self):
@@ -209,4 +214,3 @@ class HrContract(models.Model):
         if context.get('active_model') == 'res.partner':
             res.update({'partner_id': context.get('active_id')})
         return res
-

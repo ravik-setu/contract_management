@@ -12,6 +12,7 @@ class ProjectProject(models.Model):
     expire_percent = fields.Float(string="Expiry Percent",
                                   help="By this percentage, Contract/Project expiry status can be identify.")
     is_contract_use = fields.Boolean(string="Manage Contract", default=False)
+    default_contract_id = fields.Many2one("hr.contract", string="Default Contract")
 
     def action_view_customer_invoice(self):
         """

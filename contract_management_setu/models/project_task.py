@@ -17,4 +17,4 @@ class ProjectTask(models.Model):
         """
         for task in self:
             if task.project_id.is_contract_use:
-                task.contract_id = task.project_id.get_latest_contract().id
+                task.contract_id = task.project_id.default_contract_id.id
