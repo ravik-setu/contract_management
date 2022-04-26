@@ -33,10 +33,10 @@
                 <field name="total_service_hours"/>
                 <field name="invoice_id"/>
                 <field name="invoice_date"/>
-                <field name="invoice_amount"/>
+                <field name="invoice_amount" sum="Invoice Amount"/>
                 <field name="payment_id"/>
                 <field name="payment_date"/>
-                <field name="payment_amount"/>
+                <field name="payment_amount" sum="Payment Amount"/>
             </tree>
         </field>
     </record>
@@ -54,15 +54,15 @@
     </record>
 
     <record model="ir.actions.act_window" id="action_report_invoice_pivot">
-        <field name="name">Report Invoice</field>
+        <field name="name">Contract Ledger  Report</field>
         <field name="res_model">hr.contract.report.analysis</field>
-        <field name="view_id" ref="hr_contract_view_pivot_analysis"/>
+        <field name="view_id" ref="hr_contract_view_tree_analysis"/>
         <field name="view_mode">tree,pivot</field>
         <field name="context">{'search_default_group_by_partner_id': True}</field>
     </record>
 
 
-    <menuitem name="Customer Report"
+    <menuitem name="Contract Ledger Report"
               id="menu_report_customer"
               action="action_report_invoice_pivot"
               parent="contract_management_setu.contract_report_root"
