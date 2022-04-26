@@ -111,19 +111,3 @@ class HrContractReportAnalysis(models.Model):
                  move.amount_total_signed   
         """
         return query
-
-# WHERE id NOT IN ()
-# ids = [val['id'] for val in values]
-# invoice.name as invoice_name,
-#                     invoice.move_type,
-#                     payment.amount
-#                 FROM account_payment payment
-#                     JOIN account_move move ON move.id = payment.move_id
-#                     JOIN account_move_line line ON line.move_id = move.id
-#                     JOIN account_partial_reconcile part ON part.debit_move_id = line.id OR part.credit_move_id = line.id
-#                     JOIN account_move_line counterpart_line ON part.debit_move_id = counterpart_line.id OR part.credit_move_id = counterpart_line.id
-#                     JOIN account_move invoice ON invoice.id = counterpart_line.move_id
-#                     JOIN account_account account ON account.id = line.account_id
-#                 WHERE invoice.contract_id IS NOT NULL AND account.internal_type IN ('receivable', 'payable') AND line.id != counterpart_line.id
-#                     AND invoice.move_type in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')
-#                 GROUP BY payment.id, invoice.move_type, invoice.id
