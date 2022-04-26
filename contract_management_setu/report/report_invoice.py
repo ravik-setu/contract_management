@@ -6,83 +6,80 @@ class HrContractReportAnalysis(models.Model):
     _description = "Report for Invoices of Project"
     _auto = False
 
-    partner_name = fields.Many2one("res.partner", string="Customer")
+    contract_id = fields.Many2one('hr.contract', string="Contract")
     project_id = fields.Many2one("project.project", string="Project")
-    contract_name = fields.Char(string="Contract Name")
-
+    partner_id = fields.Many2one("res.partner", string="Customer")
     from_date = fields.Date(string="From Date")
     to_date = fields.Date(string="To Date")
-    contract_uom = fields.Selection([('hours', 'Hours'), ('days', 'Days')], default='days')
-    contract_quantity = fields.Float(string="Contract Quantity")
+    contract_quantity = fields.Char(string="Contract Quantity")
+    total_service_hours = fields.Char(string="Total Quantity")
+    invoice_id = fields.Many2one('account.move', string="Invoice")
     invoice_date = fields.Date(string="Invoice  Date")
+    invoice_amount = fields.Float(string="Invoice Amount")
+    payment_id = fields.Many2one('account.payment', string="Payment")
     payment_date = fields.Date(string="Payment Date")
     payment_amount = fields.Float(string="Payment Amount")
-    amount_total_signed = fields.Float(string="Invoice Amount")
-    invoice_name = fields.Char(string="Inovice")
-
-    def _select(self):
-        select_str = """
-        SELECT row_number() OVER () as id, 
-        contract.name as contract_name,
-        contract.contract_uom,
-        contract.project_id,
-        contract.from_date,
-        contract.to_date,
-        contract.contract_quantity,
-        account_move.invoice_date,
-        Null as payment_date,
-        account_move.id AS invoice_id,
-        account_move.name AS invoice_name,
-        account_move.move_type,
-        account_move.amount_total AS payment_amount,
-        partner.name as partner_name,
-        account_move.amount_total_signed
-    """
-        return select_str
-
-    def _from(self):
-        query = self.get_invoice_from_payment()
-        self._cr.execute(query)
-        store = self._cr.dictfetchall()
-        invoice_ids = tuple(val['invoice_id'] for val in store)
-        from_str = """
-        account_move
-         JOIN hr_contract contract ON contract.id = account_move.contract_id
-         JOIN res_partner partner on partner.id = contract.partner_id
-        WHERE account_move.contract_id IS NOT NULL 
-            AND account_move.state!='draft'
-            AND move_type='out_invoice' 
-            AND account_move.id 
-        NOT IN {}     
-        UNION
-        {} 
-        """.format(invoice_ids, self.get_invoice_from_payment())
-        return from_str
 
     def init(self):
+        """
+        Use: Update view everytime when module upgrade
+        """
         tools.drop_view_if_exists(self.env.cr, self._table)
-        self.env.cr.execute("""CREATE or REPLACE VIEW %s as (
-            %s
-            FROM %s
-            )""" % (self._table, self._select(), self._from()))
+        self.env.cr.execute("""
+            CREATE or REPLACE VIEW {} as ({} UNION {})
+        """.format(self._table, self.get_contract_data_without_payment(), self.get_contract_data_with_payment()))
 
-    def get_invoice_from_payment(self):
-        query = """
-            SELECT row_number() OVER () AS id,
-                contract.name as contract_name, 
-                contract.contract_uom,
+    def get_contract_data_without_payment(self):
+        """
+        Use: This method will give contract data which payment is not done yet
+        """
+        sub_query = self.get_contract_data_with_payment()
+        self._cr.execute(sub_query)
+        result = self._cr.dictfetchall()
+        invoice_ids = tuple(res['invoice_id'] for res in result)
+
+        main_query = """
+            SELECT row_number() OVER () as id, 
+                contract.id as contract_id,
                 contract.project_id,
+                partner.id as partner_id,
                 contract.from_date,
                 contract.to_date,
-                contract.contract_quantity,
-                invoice.invoice_date,
-                invoice.date as payment_date,
+                CONCAT(contract.contract_quantity, ' ', contract.contract_uom) AS contract_quantity,
+                CONCAT(contract.total_contract_service_hours, ' hours') AS total_service_hours,
+                account_move.id AS invoice_id,
+                account_move.invoice_date,
+                account_move.amount_total AS invoice_amount,
+                null AS payment_id,
+                null AS payment_date,
+                null AS payment_amount
+            FROM account_move
+                JOIN hr_contract contract ON contract.id = account_move.contract_id
+                JOIN res_partner partner on partner.id = contract.partner_id
+            WHERE account_move.contract_id IS NOT NULL AND account_move.state!='draft'
+                    AND move_type='out_invoice' AND account_move.id NOT IN {}
+        """.format(invoice_ids)
+        return main_query
+
+    def get_contract_data_with_payment(self):
+        """
+        Use: This method will give contract data which payment is done
+        """
+        main_query = """
+            SELECT row_number() OVER () AS id,
+                contract.id as contract_id, 
+                contract.project_id,
+                partner.id as partner_id,
+                contract.from_date,
+                contract.to_date,
+                CONCAT(contract.contract_quantity, ' ', contract.contract_uom) AS contract_quantity,
+                CONCAT(contract.total_contract_service_hours, ' hours') AS total_service_hours,
                 invoice.id AS invoice_id,
-                invoice.name AS invoice_name,
-                invoice.move_type,
-                 payment.amount as payment_amount ,
-                partner.name as partner_name,
-                move.amount_total_signed
+                invoice.invoice_date,
+                invoice.amount_total AS invoice_amount,
+                payment.id AS payment_id,
+                invoice.date AS payment_date,
+                payment.amount AS payment_amount
            FROM account_payment payment
                  JOIN account_move move ON move.id = payment.move_id
                  JOIN account_move_line line ON line.move_id = move.id
@@ -92,22 +89,10 @@ class HrContractReportAnalysis(models.Model):
                  JOIN account_account account ON account.id = line.account_id
                  JOIN hr_contract contract ON contract.id = invoice.contract_id
                  JOIN res_partner partner on partner.id = contract.partner_id
-             
-        WHERE invoice.contract_id IS NOT NULL 
-                    AND  account.internal_type IN ('receivable', 'payable') 
-                    AND line.id != counterpart_line.id
-                    AND invoice.move_type in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')
-        GROUP BY payment.id, 
-                 invoice.move_type,
-                 invoice.id,
-                 contract.name,
-                 contract.contract_uom,
-                 contract.project_id,
-                 contract.from_date,
-                 contract.to_date,
-                 contract.contract_quantity,
-                 invoice.invoice_date ,
-                 partner.name,
-                 move.amount_total_signed   
+        WHERE invoice.contract_id IS NOT NULL AND  account.internal_type IN ('receivable', 'payable') 
+              AND line.id != counterpart_line.id
+              AND invoice.move_type in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')
+        GROUP BY contract.id, contract.project_id, partner.id, payment.id, invoice.id, contract.contract_uom,  
+                 contract.from_date, contract.to_date, contract.contract_quantity, invoice.invoice_date
         """
-        return query
+        return main_query

@@ -1,22 +1,55 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+    <!-- Pivot View -->
     <record id="hr_contract_view_pivot_analysis" model="ir.ui.view">
         <field name="name">hr.contract.view.pivot.analysis</field>
         <field name="model">hr.contract.report.analysis</field>
         <field name="arch" type="xml">
-            <pivot string="Report"  disable_linking="1">
-                <field name="contract_name" type="row"/>
+            <pivot string="Report" disable_linking="1">
+                <field name="partner_id" type="row"/>
                 <field name="project_id" type="row"/>
-                <field name ="from_date" type="col"/>
-                <field name ="to_date" type="col"/>
-                <field name ="contract_uom" type="col"/>
-                <field name="contract_quantity" type="col"/>
-                <field name="invoice_date" type="col"/>
-                <field name="amount_total_signed" type="col"/>
-                <field name="payment_date" type="col"/>
-                <field name="payment_amount" type="col"/>
-            </pivot>
+                <field name="contract_id" type="row"/>
+                <field name="invoice_id" type="row"/>
+                <field name="payment_id" type="row"/>
 
+                <field name="invoice_amount" type="measure"/>
+                <field name="payment_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="hr_contract_view_tree_analysis" model="ir.ui.view">
+        <field name="name">hr.contract.view.pivot.analysis</field>
+        <field name="model">hr.contract.report.analysis</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <field name="contract_id"/>
+                <field name="from_date"/>
+                <field name="to_date"/>
+                <field name="contract_quantity"/>
+                <field name="total_service_hours"/>
+                <field name="invoice_id"/>
+                <field name="invoice_date"/>
+                <field name="invoice_amount"/>
+                <field name="payment_id"/>
+                <field name="payment_date"/>
+                <field name="payment_amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_contract_view_search_analysis" model="ir.ui.view">
+        <field name="name">hr_contract_view_search_analysis</field>
+        <field name="model">hr.contract.report.analysis</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="group_by_partner_id" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
         </field>
     </record>
 
@@ -24,7 +57,8 @@
         <field name="name">Report Invoice</field>
         <field name="res_model">hr.contract.report.analysis</field>
         <field name="view_id" ref="hr_contract_view_pivot_analysis"/>
-        <field name="view_mode">pivot</field>
+        <field name="view_mode">tree,pivot</field>
+        <field name="context">{'search_default_group_by_partner_id': True}</field>
     </record>
 
 

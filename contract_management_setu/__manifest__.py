@@ -6,11 +6,7 @@
     'category': 'Accounting',
     'description': 'Contract Management System',
     'website': 'https://www.odoo.com/app/invoicing',
-<<<<<<< Updated upstream
-    'depends': ['documents_hr_contract', 'timesheet_grid', 'project', 'account','mail'],
-=======
     'depends': ['documents_hr_contract', 'timesheet_grid', 'project', 'account','hr_contract','hr_expense'],
->>>>>>> Stashed changes
     'data': [
         'security/ir.model.access.csv',
         'views/contract_management_view.xml',
@@ -20,14 +16,11 @@
         'views/contract_utilization_report.xml',
         'views/project_task_view.xml',
         'views/account_analytic_line_view.xml',
-<<<<<<< Updated upstream
         'views/contract_portal_templates.xml',
         'views/contract_report.xml',
         'data/email_template_customer.xml',
         'data/email_template_manager.xml',
-=======
         'report/report_invoice.xml'
->>>>>>> Stashed changes
     ],
     'demo': [
     ],
