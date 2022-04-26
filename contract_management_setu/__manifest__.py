@@ -20,7 +20,7 @@
         'views/contract_report.xml',
         'data/email_template_customer.xml',
         'data/email_template_manager.xml',
-        'report/report_invoice.xml'
+        'report/hr_contract_report_analysis.xml'
     ],
     'demo': [
     ],

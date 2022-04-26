@@ -1,1 +1,1 @@
-from . import report_invoice
+from . import hr_contract_report_analysis
