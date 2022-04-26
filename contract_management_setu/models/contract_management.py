@@ -32,6 +32,8 @@ class HrContract(models.Model):
         ('running', 'Running'), ('near_to_expire', 'Near To Expire'), ('expired', 'Expired')],
         string="Expiry Status", compute="_compute_expiry_status", store=True)
 
+
+
     @api.depends('contract_uom', 'hours_per_day', 'contract_quantity', 'timesheet_ids.unit_amount')
     def _compute_total_contract_service_hours(self):
         """
@@ -187,6 +189,20 @@ class HrContract(models.Model):
             contract_used = contract.utilised_quantity and (contract.utilised_quantity / 100)
             if contract_expire_percent < contract_used < 1:
                 contract.expiry_status = 'near_to_expire'
+                view_context = dict(self._context)
+                view_context.update({'email_subject_manager': 'Hello This Is Subject For Manager',
+                                    'email_to_manager': self.project_id.user_id.partner_id.email,
+                                     'email_subject_customer': 'Hello This Is Subject For Customer',
+                                     'email_to_customer': self.project_id.partner_id.email})
+                if contract.project_id.is_send_email == True:
+                    if contract.project_id.is_send_email_customer == True:
+                        temp_id = self.env.ref('contract_management_setu.email_template_for_contract_customer').id
+                        template_customer = self.env['mail.template'].browse(temp_id)
+                        template_customer.with_context(view_context).send_mail(self.id,force_send=True)
+                    if contract.project_id.is_send_email_manager == True:
+                        temp_manager_id = self.env.ref('contract_management_setu.email_template_for_contract_manager').id
+                        template_manager = self.env['mail.template'].browse(temp_manager_id)
+                        template_manager.with_context(view_context).send_mail(self.id, force_send=True)
             elif contract_used == 1:
                 contract.expiry_status = 'expired'
             else:

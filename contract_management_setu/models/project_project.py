@@ -12,6 +12,9 @@ class ProjectProject(models.Model):
                                   help="By this percentage, Contract/Project expiry status can be identify.")
     is_contract_use = fields.Boolean(string="Manage Contract", default=False)
 
+    is_send_email = fields.Boolean(string="Send Email",defult=False)
+    is_send_email_customer = fields.Boolean(string="Send Email To Customer", defult=False)
+    is_send_email_manager = fields.Boolean(string="Send Email Manager", defult=False)
     def action_view_customer_invoice(self):
         """
         Added By: Jigna J Savaniya | Date: 8th April,2022 | Task : 600

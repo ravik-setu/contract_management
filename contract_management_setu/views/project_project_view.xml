@@ -25,7 +25,8 @@
                         </div>
                     </button>
                     <button class="oe_stat_button" name="action_view_customer_contract" type="object"
-                            icon="fa-file-text  fa-file-contract" attrs="{'invisible': [('is_contract_use', '=', False)]}">
+                            icon="fa-file-text  fa-file-contract"
+                            attrs="{'invisible': [('is_contract_use', '=', False)]}">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_value">
                                 <field name="contract_count"/>
@@ -36,7 +37,22 @@
                         </div>
                     </button>
                 </xpath>
-
+                <xpath expr="//page[@name='settings']" position="after">
+                    <page string="Email Sent">
+                        <pre>
+                            <label for="is_send_email" string="Send Email?"/>
+                            <field name="is_send_email"/>
+                        </pre>
+                        <pre>
+                            <label for="is_send_email_customer" string="Send Email Customer?"/>
+                            <field name="is_send_email_customer"/>
+                        </pre>
+                        <pre>
+                            <label for="is_send_email_manager" string="Send Email Manager?"/>
+                            <field name="is_send_email_manager"/>
+                        </pre>
+                    </page>
+                </xpath>
             </field>
         </record>
     </data>
