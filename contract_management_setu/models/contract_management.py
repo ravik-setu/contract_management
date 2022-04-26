@@ -47,7 +47,8 @@ class HrContract(models.Model):
 
             total_timesheet = sum(contract.timesheet_ids.mapped('unit_amount'))
             contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
-            contract.utilised_quantity = contract.total_contract_service_hours and (total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
+            contract.utilised_quantity = contract.total_contract_service_hours and (
+                        total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
 
     @api.constrains('contract_quantity', 'timesheet_ids')
     def check_contract_quantity(self):
@@ -187,6 +188,21 @@ class HrContract(models.Model):
             contract_used = contract.utilised_quantity and (contract.utilised_quantity / 100)
             if contract_expire_percent < contract_used < 1:
                 contract.expiry_status = 'near_to_expire'
+                view_context = dict(self._context)
+                view_context.update({'email_subject_manager': 'Hello This Is Subject For Manager',
+                                     'email_to_manager': self.project_id.user_id.partner_id.email,
+                                     'email_subject_customer': 'Hello This Is Subject For Customer',
+                                     'email_to_customer': self.project_id.partner_id.email})
+                if contract.project_id.is_send_email == True:
+                    if contract.project_id.is_send_email_customer == True:
+                        temp_id = self.env.ref('contract_management_setu.email_template_for_contract_customer').id
+                        template_customer = self.env['mail.template'].browse(temp_id)
+                        template_customer.with_context(view_context).send_mail(self.id, force_send=True)
+                    if contract.project_id.is_send_email_manager == True:
+                        temp_manager_id = self.env.ref(
+                            'contract_management_setu.email_template_for_contract_manager').id
+                        template_manager = self.env['mail.template'].browse(temp_manager_id)
+                        template_manager.with_context(view_context).send_mail(self.id, force_send=True)
             elif contract_used == 1:
                 contract.expiry_status = 'expired'
             else:
@@ -203,3 +219,11 @@ class HrContract(models.Model):
             res.update({'partner_id': context.get('active_id')})
         return res
 
+    @api.model
+    def create(self, vals):
+        res = super(HrContract, self).create(vals)
+        if res.contract_quantity <= 0:
+            raise UserError("Total Contract Service Hours must be positive")
+        if res.to_date < res.from_date:
+            raise UserError("End date must be greater than start date")
+        return res
