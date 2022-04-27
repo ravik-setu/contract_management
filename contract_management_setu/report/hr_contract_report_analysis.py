@@ -71,8 +71,8 @@ class HrContractReportAnalysis(models.Model):
                 JOIN hr_contract contract ON contract.id = account_move.contract_id
                 JOIN res_partner partner on partner.id = contract.partner_id
             WHERE account_move.contract_id IS NOT NULL AND account_move.state!='draft'
-                    AND move_type='out_invoice' AND account_move.id NOT IN (SELECT id FROM get_invoice_with_payment())
-        """
+                    AND move_type='out_invoice' AND account_move.id NOT IN (SELECT foo.invoice_id FROM ({}) AS foo)
+        """.format(self.get_contract_data_with_payment())
         return query
 
     def get_contract_data_with_payment(self):
