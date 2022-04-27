@@ -26,21 +26,35 @@ class HrContractReportAnalysis(models.Model):
         """
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute("""
-            CREATE or REPLACE VIEW {} as ({} UNION {})
+            CREATE or REPLACE VIEW {} as (
+            SELECT row_number() OVER (ORDER BY invoice_id ASC) as id,
+                    tmp.contract_id,
+                    tmp.project_id,
+                    tmp.partner_id,
+                    tmp.from_date,
+                    tmp.to_date,
+                    tmp.contract_quantity,
+                    tmp.total_service_hours,
+                    tmp.invoice_id,
+                    tmp.invoice_date,
+                    tmp.invoice_amount,
+                    tmp.payment_id,
+                    tmp.payment_date,
+                    tmp.payment_amount
+            FROM (
+                    {} 
+                    UNION 
+                    {}
+                ) AS tmp 
+            )
         """.format(self._table, self.get_contract_data_without_payment(), self.get_contract_data_with_payment()))
 
     def get_contract_data_without_payment(self):
         """
         Use: This method will give contract data which payment is not done yet
         """
-        sub_query = self.get_contract_data_with_payment()
-        self._cr.execute(sub_query)
-        result = self._cr.dictfetchall()
-        invoice_ids = tuple(res['invoice_id'] for res in result)
-
-        main_query = """
-            SELECT row_number() OVER () as id, 
-                contract.id as contract_id,
+        query = """
+            SELECT contract.id as contract_id,
                 contract.project_id,
                 partner.id as partner_id,
                 contract.from_date,
@@ -50,24 +64,23 @@ class HrContractReportAnalysis(models.Model):
                 account_move.id AS invoice_id,
                 account_move.invoice_date,
                 account_move.amount_total AS invoice_amount,
-                null AS payment_id,
-                null AS payment_date,
-                null AS payment_amount
+                null::integer AS payment_id,
+                null::date AS payment_date,
+                null::integer AS payment_amount
             FROM account_move
                 JOIN hr_contract contract ON contract.id = account_move.contract_id
                 JOIN res_partner partner on partner.id = contract.partner_id
             WHERE account_move.contract_id IS NOT NULL AND account_move.state!='draft'
-                    AND move_type='out_invoice' AND account_move.id NOT IN {}
-        """.format(invoice_ids)
-        return main_query
+                    AND move_type='out_invoice' AND account_move.id NOT IN (SELECT id FROM get_invoice_with_payment())
+        """
+        return query
 
     def get_contract_data_with_payment(self):
         """
         Use: This method will give contract data which payment is done
         """
-        main_query = """
-            SELECT row_number() OVER () AS id,
-                contract.id as contract_id, 
+        query = """
+            SELECT contract.id as contract_id, 
                 contract.project_id,
                 partner.id as partner_id,
                 contract.from_date,
@@ -95,4 +108,4 @@ class HrContractReportAnalysis(models.Model):
         GROUP BY contract.id, contract.project_id, partner.id, payment.id, invoice.id, contract.contract_uom,  
                  contract.from_date, contract.to_date, contract.contract_quantity, invoice.invoice_date
         """
-        return main_query
+        return query

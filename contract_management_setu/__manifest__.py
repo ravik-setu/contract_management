@@ -9,6 +9,7 @@
     'depends': ['documents_hr_contract', 'timesheet_grid', 'project', 'account','hr_contract','hr_expense'],
     'data': [
         'security/ir.model.access.csv',
+        'db_function/contract_management_report_function.sql',
         'views/contract_management_view.xml',
         'views/project_project_view.xml',
         'views/account_move_view.xml',
