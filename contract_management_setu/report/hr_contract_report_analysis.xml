@@ -33,10 +33,10 @@
                 <field name="total_service_hours"/>
                 <field name="invoice_id"/>
                 <field name="invoice_date"/>
-                <field name="invoice_amount" sum="Invoice Amount"/>
+                <field name="invoice_amount"/>
                 <field name="payment_id"/>
                 <field name="payment_date"/>
-                <field name="payment_amount" sum="Payment Amount"/>
+                <field name="payment_amount"/>
             </tree>
         </field>
     </record>
