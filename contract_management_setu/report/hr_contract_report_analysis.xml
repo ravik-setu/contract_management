@@ -36,7 +36,7 @@
                 <field name="invoice_amount"/>
                 <field name="payment_id"/>
                 <field name="payment_date"/>
-                <field name="payment_amount"/>
+                <field name="payment_amount" sum="Payment Amount"/>
             </tree>
         </field>
     </record>
