@@ -10,6 +10,7 @@
                 <xpath expr="//form/sheet/group/group//field[@name='company_id']" position="after">
                     <field name="expire_percent" widget="percentage" groups="account.group_account_invoice"/>
                     <field name="is_contract_use" groups="account.group_account_invoice"/>
+                    <field name="default_contract"  groups="account.group_account_invoice"  domain="[('state','=','open'),('partner_id','=', partner_id)]" attrs="{'invisible': [('is_contract_use', '=', False)]}"/>
                 </xpath>
 
                 <xpath expr="//div[@name='button_box']" position="inside">
@@ -20,7 +21,7 @@
                                 <field name="contract_invoice_count"/>
                             </span>
                             <span class="o_stat_text">
-                                Contract Invoice
+                                Customer Contract Invoice
                             </span>
                         </div>
                     </button>
@@ -32,7 +33,7 @@
                                 <field name="contract_count"/>
                             </span>
                             <span class="o_stat_text">
-                                Contract
+                                Customer Contract
                             </span>
                         </div>
                     </button>
