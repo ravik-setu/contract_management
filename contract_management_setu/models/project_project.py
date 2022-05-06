@@ -15,6 +15,8 @@ class ProjectProject(models.Model):
     is_send_email = fields.Boolean(string="Send Email",defult=False)
     is_send_email_customer = fields.Boolean(string="Send Email To Customer", defult=False)
     is_send_email_manager = fields.Boolean(string="Send Email Manager", defult=False)
+    default_contract = fields.Many2one("hr.contract", string="Default Contract")
+
     def action_view_customer_invoice(self):
         """
         Added By: Jigna J Savaniya | Date: 8th April,2022 | Task : 600
