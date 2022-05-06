@@ -20,8 +20,9 @@
                 Invoices
             </li>
             <li t-if="payments" class="breadcrumb-item active">
-                payments
+                Payments
             </li>
+
         </xpath>
     </template>
     <template id="portal_my_home_contract" name="contracts" inherit_id="portal.portal_my_home" priority="85">
@@ -79,7 +80,8 @@
                             <span t-field="data.contract_uom"/>
                         </td>
                         <td class="text-center">
-                            <span t-field="data.total_contract_service_hours"/> hours
+                            <span t-field="data.total_contract_service_hours"/>
+                            hours
                         </td>
                     </tr>
                 </t>
@@ -212,6 +214,52 @@
         </xpath>
     </template>
 
+    <template id="portal_my_invoices" name="My Invoices">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Invoices</t>
+            </t>
+            <t t-if="not invoices">
+                <p>There are currently no Invoices for your account.</p>
+            </t>
+            <t t-if="invoices" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th class="text-center">Invoice#</th>
+                        <th class="text-center">Invoice Date</th>
+                        <th class="text-center">Due Date</th>
+                        <th class="text-center"></th>
+                        <th class="text-center">Amount Due</th>
+                    </tr>
+                </thead>
+                <t t-foreach="invoices" t-as="invoices">
+                    <tr>
+
+                        <td class="text-center">
+                            <a t-att-href="invoices.get_portal_url()" t-att-title="invoices.name">
+                                <span t-field="invoices.name"/>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="invoices.invoice_date"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="invoices.invoice_date_due"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="invoices.state"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="invoices.amount_residual"/>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
     <template id="portal_my_contracts_payments" name="My Contracts">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -270,10 +318,11 @@
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
-                <t t-set="title">timesheet</t>
+                <t t-set="title">Timesheet</t>
             </t>
+
             <t t-if="not timesheet">
-                <p>There are currently no payments for your account.</p>
+                <p>There are currently no time sheets for your account.</p>
             </t>
             <t t-if="timesheet" t-call="portal.portal_table">
                 <thead>

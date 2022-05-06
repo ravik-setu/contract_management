@@ -66,7 +66,7 @@ class CustomerPortal(portal.CustomerPortal):
             'invoices': info,
             'page_name': 'contract'
         }
-        return request.render("account.portal_my_invoices", values)
+        return request.render("contract_management_setu.portal_my_invoices", values)
 
     @http.route(['/my/contracts/<int:contract_id>/payments'], type='http', auth="user", website=True)
     def portal_contract_payments(self, contract_id, **kw):
