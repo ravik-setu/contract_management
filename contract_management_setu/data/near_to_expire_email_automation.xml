@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_automatic_near_to_expire" model="ir.cron">
+            <field name="name">Send Email On Near To Expire Contract</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            <field name="active" eval="False"/>
+            <field name="state">code</field>
+            <field name="code">model.near_to_expire_email_automation()</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-1</field>
+        </record>
+    </data>
+</odoo>

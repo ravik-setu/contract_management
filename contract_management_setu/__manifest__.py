@@ -18,8 +18,13 @@
         'views/account_analytic_line_view.xml',
         'views/contract_portal_templates.xml',
         'views/contract_report.xml',
-        'data/email_template_customer.xml',
-        'data/email_template_manager.xml',
+        'data/expired_contract_email_to_customer.xml',
+        'data/expired_contract_email_to_reponsible.xml',
+        'data/task_create_email_to_reponsible.xml',
+        'data/task_created_email_to_customer.xml',
+        'data/near_to_expire_email_automation.xml',
+        'data/near_to_expire_contract_email_to_reponsible.xml',
+        'data/near_to_expired_contract_email_to_customer.xml',
         'report/hr_contract_report_analysis.xml'
     ],
     'demo': [
