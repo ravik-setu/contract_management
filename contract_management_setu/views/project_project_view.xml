@@ -40,18 +40,45 @@
                 </xpath>
                 <xpath expr="//page[@name='settings']" position="after">
                     <page string="Email Sent">
-                        <pre>
-                            <label for="is_send_email" string="Send Email?"/>
-                            <field name="is_send_email"/>
-                        </pre>
-                        <pre>
-                            <label for="is_send_email_customer" string="Send Email Customer?"/>
-                            <field name="is_send_email_customer"/>
-                        </pre>
-                        <pre>
-                            <label for="is_send_email_manager" string="Send Email Manager?"/>
-                            <field name="is_send_email_manager"/>
-                        </pre>
+                        `   <group>
+                                <group>
+                                    <h2>
+                                        Customer
+                                    </h2>
+                                </group>
+                                <group>
+                                    <h2>
+                                        Reponsible
+                                    </h2>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="task_create_email_to_customer"/>
+                                </group>
+                                <group>
+                                    <field name="task_create_email_to_reponsible"/>
+                                </group>
+                            </group>
+
+                            <group>
+                                <group>
+                                    <field name="expired_contract_email_to_customer"/>
+                                </group>
+                                <group>
+                                    <field name="expired_contract_email_to_reponsible"/>
+                                </group>
+                            </group>
+
+                            <group>
+                                <group>
+                                    <field name="near_to_expire_email_to_customer"/>
+                                </group>
+                                <group>
+                                    <field name="near_to_expire_email_to_reponsible"/>
+                                </group>
+                            </group>
+
                     </page>
                 </xpath>
             </field>
