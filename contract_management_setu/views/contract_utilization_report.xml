@@ -12,6 +12,9 @@
                     <field name="contract_uom" string="Contract Uom"/>
                     <field name="contract_quantity" string="Contract Quantity"/>
                     <field name="total_contract_service_hours" string="Contract Amount"/>
+                    <field name="contract_quantity" string="Timesheet Hours"/>
+                    <field name="remaining_quantity" string="Remaining Hours"/>
+                    <field name="utilised_quantity" string="Contract Utilised %"/>
                     <field name="state"
                            widget="badge"
                            decoration-info="state == 'draft'"
