@@ -24,19 +24,23 @@ class ProjectTask(models.Model):
         res = super(ProjectTask,self).create(vals)
         for record in res:
             if record.is_contract_use:
+                emails = self.env['res.partner']
+                if record.project_id.task_create_email_to_customer == True:
+                    emails += record.contract_id.partner_id
+                if record.project_id.task_create_email_to_reponsible == True:
+                    emails += record.contract_id.hr_responsible_id.partner_id
+
                 view_context = dict(record._context)
                 view_context.update(
                     {'email_subject_task_create_customer': '',
-                     'email_to_task_create_customer': record.partner_id.email,
-                     'email_to_task_create_responsible': record.contract_id.hr_responsible_id.work_email,
                      'email_subject_task_create_responsible': '', })
-                if record.project_id.task_create_email_to_customer:
-                    temp_id = self.env.ref('contract_management_setu.email_template_for_task_created_customer').id
-                    template_customer = self.env['mail.template'].browse(temp_id)
-                    template_customer.with_context(view_context).send_mail(record.id, force_send=True)
-                if record.project_id.task_create_email_to_reponsible:
-                    temp_id = self.env.ref('contract_management_setu.email_template_for_task_created_reponsible').id
-                    template_responsible = self.env['mail.template'].browse(temp_id)
-                    template_responsible.with_context(view_context).send_mail(record.id, force_send=True)
+
+                email_values = {
+                    'email_to': ','.join(partner.email for partner in emails)
+                }
+
+                temp_id = self.env.ref('contract_management_setu.email_template_for_task_created_customer').id
+                template_customer = self.env['mail.template'].browse(temp_id)
+                template_customer.with_context(view_context).send_mail(record.id, force_send=True,email_values=email_values)
 
         return res
