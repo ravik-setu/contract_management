@@ -31,12 +31,6 @@ class ProjectTask(models.Model):
                     emails += record.contract_id.partner_id
                 if record.project_id.task_create_email_to_reponsible:
                     emails += record.contract_id.hr_responsible_id.partner_id
-
-                view_context = dict(record._context)
-                view_context.update(
-                    {'email_subject_task_create_customer': '',
-                     'email_subject_task_create_responsible': '', })
-
                 email_values = {
                     'email_to': ','.join(partner.email for partner in emails)
                 }
@@ -44,11 +38,11 @@ class ProjectTask(models.Model):
                 temp_id = self.env.ref('contract_management_setu.email_template_for_task_created_customer').id
                 template_customer = self.env['mail.template'].browse(temp_id)
                 try:
-                    template_customer.with_context(view_context).send_mail(record.id, force_send=True,
-                                                                           email_values=email_values)
+                    template_customer.send_mail(record.id, force_send=True,
+                                                email_values=email_values)
                 except Exception as e:
                     _logger.info(
                         "Error {} comes at the time of sending task create email, Task {}: {}".format(e, record.id,
-                                                                                                           record.name))
+                                                                                                      record.name))
 
         return res

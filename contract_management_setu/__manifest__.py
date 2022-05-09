@@ -20,6 +20,7 @@
         'views/contract_report.xml',
         'report/hr_contract_report_analysis.xml',
         'data/email_template.xml',
+        'data/ir_cron.xml'
     ],
     'demo': [
     ],

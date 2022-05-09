@@ -9,7 +9,7 @@
                 }}
             </field>
             <field name="email_to">{{ ctx.get('email_to','')}}</field>
-            <field name="subject">{{ ctx.get('email_subject','' )}}</field>
+            <field name="subject">Contract Expiry Notification</field>
             <field name="model_id" ref="hr_contract.model_hr_contract"/>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0"
@@ -128,7 +128,7 @@
                 }}
             </field>
             <field name="email_to">{{ ctx.get('email_to','')}}</field>
-            <field name="subject">{{ ctx.get('email_subject','' )}}</field>
+            <field name="subject">Contract Expired Notification</field>
             <field name="model_id" ref="hr_contract.model_hr_contract"/>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0"
@@ -224,12 +224,12 @@
                                                    style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" align="left">
-                                                        <t t-out="object.company_id.name or ''">YourCompany</t>
+                                                        <t t-out="object.company_id.name or ''">Regards,</t>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td valign="middle" align="left" style="opacity: 0.7;">
-                                                        <t t-out="object.company_id.name or ''"/>
+                                                        <t t-out="object.company_id.name or ''"></t>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -244,45 +244,10 @@
             <field name="auto_delete" eval="False"/>
         </record>
 
-        <record id="email_template_for_contract_expiry_customer" model="mail.template">
-            <field name="name">Email Template For Customer Contract Expired</field>
-            <field name="email_to">{{ ctx.get('email_to_contract_expiry_customer','')}}</field>
-            <field name="subject">{{ ctx.get('email_subject_contract_expiry_customer','' )}}</field>
-            <field name="model_id" ref="contract_management_setu.model_hr_contract"/>
-            <field name="body_html" type="html">
-                <p>
-                    Hello This Is Test Email For Customer
-                </p>
-            </field>
-        </record>
-
-        <record id="ir_cron_automatic_near_to_expire" model="ir.cron">
-            <field name="name">Send Email On Near To Expire Contract</field>
-            <field name="model_id" ref="model_hr_contract"/>
-            <field name="active" eval="False"/>
-            <field name="state">code</field>
-            <field name="code">model.near_to_expire_email_automation()</field>
-            <field name='interval_number'>1</field>
-            <field name='interval_type'>days</field>
-            <field name="numbercall">-1</field>
-        </record>
-
-        <record id="email_template_for_contract__near_to_expire_customer" model="mail.template">
-            <field name="name">Customer Contract Expire Template</field>
-            <field name="email_to">{{ ctx.get('email_to_near_to_near_to_expire_customer','')}}</field>
-            <field name="subject">{{ ctx.get('subject','')}}</field>
-            <field name="model_id" ref="contract_management_setu.model_hr_contract"/>
-            <field name="body_html" type="html">
-                <p>
-                    Hello This Is Test Email For Customer Contract Near To Expire
-                </p>
-            </field>
-        </record>
-
         <record id="email_template_for_task_created_customer" model="mail.template">
             <field name="name">Email Template For Customer Task Created</field>
             <field name="email_to">{{ ctx.get('email_to_task_create_customer','')}}</field>
-            <field name="subject">{{ ctx.get('email_subject_task_create_customer','')}}</field>
+            <field name="subject">Task Create Notification</field>
             <field name="model_id" ref="contract_management_setu.model_project_task"/>
             <field name="body_html" type="html">
                 <table border="0" cellpadding="0" cellspacing="0"
@@ -377,12 +342,12 @@
                                                    style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
                                                 <tr>
                                                     <td valign="middle" align="left">
-                                                        <t t-out="object.company_id.name or ''">YourCompany</t>
+                                                        <t t-out="object.company_id.name or ''">Regards,</t>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td valign="middle" align="left" style="opacity: 0.7;">
-                                                        <t t-out="object.company_id.name or ''"/>
+                                                        <t t-out="object.company_id.name or ''"></t>
                                                     </td>
                                                 </tr>
                                             </table>
