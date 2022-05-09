@@ -11,6 +11,8 @@
                     <field name="expire_percent" widget="percentage" groups="account.group_account_invoice"/>
                     <field name="is_contract_use" groups="account.group_account_invoice"/>
                     <field name="default_contract"  groups="account.group_account_invoice"  domain="[('state','=','open'),('partner_id','=', partner_id)]" attrs="{'invisible': [('is_contract_use', '=', False)]}"/>
+                    <field name="allow_over_timesheet" groups="account.group_account_invoice"
+                           attrs="{'invisible': [('is_contract_use', '=', False)]}"/>
                 </xpath>
 
                 <xpath expr="//div[@name='button_box']" position="inside">
@@ -39,19 +41,46 @@
                     </button>
                 </xpath>
                 <xpath expr="//page[@name='settings']" position="after">
-                    <page string="Email Sent">
-                        <pre>
-                            <label for="is_send_email" string="Send Email?"/>
-                            <field name="is_send_email"/>
-                        </pre>
-                        <pre>
-                            <label for="is_send_email_customer" string="Send Email Customer?"/>
-                            <field name="is_send_email_customer"/>
-                        </pre>
-                        <pre>
-                            <label for="is_send_email_manager" string="Send Email Manager?"/>
-                            <field name="is_send_email_manager"/>
-                        </pre>
+                    <page string="Contract Expiry Notification">
+                        `   <group>
+                                <group>
+                                    <h2>
+                                        Customer
+                                    </h2>
+                                </group>
+                                <group>
+                                    <h2>
+                                        Responsible
+                                    </h2>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="task_create_email_to_customer"/>
+                                </group>
+                                <group>
+                                    <field name="task_create_email_to_reponsible"/>
+                                </group>
+                            </group>
+
+                            <group>
+                                <group>
+                                    <field name="expired_contract_email_to_customer"/>
+                                </group>
+                                <group>
+                                    <field name="expired_contract_email_to_reponsible"/>
+                                </group>
+                            </group>
+
+                            <group>
+                                <group>
+                                    <field name="near_to_expire_email_to_customer"/>
+                                </group>
+                                <group>
+                                    <field name="near_to_expire_email_to_reponsible"/>
+                                </group>
+                            </group>
+
                     </page>
                 </xpath>
             </field>

@@ -138,6 +138,6 @@ class CustomerPortal(portal.CustomerPortal):
             ('Content-Type', 'application/pdf'),
             ('Content-Length', len(content)),
         ]
-        filename = "demo.pdf"
+        filename = contract.name +".pdf"
         reporthttpheaders.append(('Content-Disposition', content_disposition(filename)))
         return request.make_response(content, headers=reporthttpheaders)
