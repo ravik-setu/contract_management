@@ -14,7 +14,7 @@
                     <field name="total_contract_service_hours" string="Contract Amount"/>
                     <field name="contract_quantity" string="Timesheet Hours"/>
                     <field name="remaining_quantity" string="Remaining Hours"/>
-                    <field name="utilised_quantity" string="Contract Utilised %"/>
+                    <field name="utilised_quantity" string="Contract Utilised %" widget="percentage"/>
                     <field name="state"
                            widget="badge"
                            decoration-info="state == 'draft'"
