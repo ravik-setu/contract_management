@@ -227,9 +227,9 @@ class HrContract(models.Model):
             if contract.project_id.is_contract_use:
                 if contract.state == 'close':
                     emails = self.env['res.partner']
-                    if contract.project_id.expired_contract_email_to_customer == True:
+                    if contract.project_id.expired_contract_email_to_customer:
                         emails += contract.partner_id
-                    if contract.project_id.expired_contract_email_to_reponsible == True:
+                    if contract.project_id.expired_contract_email_to_reponsible:
                         emails += contract.hr_responsible_id.partner_id
 
                     view_context = dict(contract._context)
@@ -248,9 +248,9 @@ class HrContract(models.Model):
         for record in contract:
             if record.expiry_status == 'near_to_expire':
                 emails = self.env['res.partner']
-                if record.project_id.near_to_expire_email_to_customer == True:
+                if record.project_id.near_to_expire_email_to_customer:
                     emails += contract.partner_id
-                if record.project_id.near_to_expire_email_to_reponsible == True:
+                if record.project_id.near_to_expire_email_to_reponsible:
                     emails += contract.hr_responsible_id.partner_id
 
                 if record.project_id.is_contract_use:

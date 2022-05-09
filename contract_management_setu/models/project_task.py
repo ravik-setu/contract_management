@@ -25,9 +25,9 @@ class ProjectTask(models.Model):
         for record in res:
             if record.is_contract_use:
                 emails = self.env['res.partner']
-                if record.project_id.task_create_email_to_customer == True:
+                if record.project_id.task_create_email_to_customer:
                     emails += record.contract_id.partner_id
-                if record.project_id.task_create_email_to_reponsible == True:
+                if record.project_id.task_create_email_to_reponsible:
                     emails += record.contract_id.hr_responsible_id.partner_id
 
                 view_context = dict(record._context)
