@@ -16,13 +16,14 @@ class ProjectProject(models.Model):
     default_contract = fields.Many2one("hr.contract", string="Default Contract")
 
 
-    task_create_email_to_customer = fields.Boolean(string="Task Create Email To Customer",default=False)
-    expired_contract_email_to_customer = fields.Boolean(string="Contract Expiry Email To Customer", default=False)
-    near_to_expire_email_to_customer = fields.Boolean(string="Near To Expire Email To Customer", default=False)
+    task_create_email_to_customer = fields.Boolean(string="Send Task Create Email To Customer",default=False)
+    expired_contract_email_to_customer = fields.Boolean(string="Send Contract Expiry Email To Customer", default=False)
+    near_to_expire_email_to_customer = fields.Boolean(string="Send Near To Expire Email To Customer", default=False)
 
-    task_create_email_to_reponsible = fields.Boolean(string="Task Create Email To Reponsible", default=False)
-    expired_contract_email_to_reponsible = fields.Boolean(string="Contract Expiry Email To Reponsible", default=False)
-    near_to_expire_email_to_reponsible = fields.Boolean(string="Near To Expire Email To Reponsible", default=False)
+    task_create_email_to_reponsible = fields.Boolean(string="Send Task Create Email To Reponsible", default=False)
+    expired_contract_email_to_reponsible = fields.Boolean(string="Send Contract Expiry Email To Reponsible", default=False)
+    near_to_expire_email_to_reponsible = fields.Boolean(string="Send Near To Expire Email To Reponsible", default=False)
+    allow_over_timesheet = fields.Boolean(string="Allow Over Timesheet", default=False)
 
     def action_view_customer_invoice(self):
         """
