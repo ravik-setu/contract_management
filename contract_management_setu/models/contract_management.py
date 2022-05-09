@@ -215,49 +215,57 @@ class HrContract(models.Model):
             raise UserError("End date must be greater than start date")
         return res
 
-    @api.onchange("state")
+    def write(self, vals):
+        res =super(HrContract, self).write(vals)
+        if vals.get('state') == 'close':
+            for rec in self:
+                rec.send_email_on_task_expired()
+        return res
+
     def send_email_on_task_expired(self):
         for contract in self:
-            if contract.is_contract_use:
+            if contract.project_id.is_contract_use:
                 if contract.state == 'close':
+                    emails = self.env['res.partner']
+                    if contract.project_id.expired_contract_email_to_customer:
+                        emails += contract.partner_id
+                    if contract.project_id.expired_contract_email_to_reponsible:
+                        emails += contract.hr_responsible_id.partner_id
+
                     view_context = dict(contract._context)
                     view_context.update({
                                             'email_subject_contract_expiry_customer': 'Hello This Is Subject For Customer Your Contract Expired',
-                                            'email_to_contract_expiry_customer': contract.partner_id.email,
-                                            'email_to_contract_expiry_reponsible': contract.hr_responsible_id.work_email,
                                             'email_subject_contract_expiry_reponsible': 'Hello This Is Subject For Responsible Your Contract Expired', })
-
-                    if contract.project_id.expired_contract_email_to_customer == True:
-                        temp_id = self.env.ref('contract_management_setu.email_template_for_contract_expiry_customer').id
-                        template_customer = self.env['mail.template'].browse(temp_id)
-                        template_customer.with_context(view_context).send_mail(contract._origin.id, force_send=True)
-                        contract.state = 'close'
-                    if contract.project_id.expired_contract_email_to_reponsible == True:
-                        temp_id = self.env.ref('contract_management_setu.email_template_for_contract_expiry_reponsible').id
-                        template_responsible = self.env['mail.template'].browse(temp_id)
-                        template_responsible.with_context(view_context).send_mail(contract._origin.id, force_send=True)
-                    contract.state = 'close'
+                    email_values = {
+                        'email_to': ','.join(partner.email for partner in emails)
+                    }
+                    temp_id = self.env.ref('contract_management_setu.email_template_for_contract_expiry_customer').id
+                    template_responsible = self.env['mail.template'].browse(temp_id)
+                    template_responsible.with_context(view_context).send_mail(contract.id, force_send=True , email_values=email_values)
 
     def near_to_expire_email_automation(self):
         contract = self.env['hr.contract'].search([])
         for record in contract:
             if record.expiry_status == 'near_to_expire':
+                emails = self.env['res.partner']
+                if record.project_id.near_to_expire_email_to_customer:
+                    emails += contract.partner_id
+                if record.project_id.near_to_expire_email_to_reponsible:
+                    emails += contract.hr_responsible_id.partner_id
+
                 if record.project_id.is_contract_use:
                     view_context = dict(record._context)
                     view_context.update(
                         {
                             'email_subject_contract_near_to_expire_customer': 'Hello This Is contract Expire Email To Customer',
-                            'email_to_near_to_near_to_expire_customer': record.partner_id.email,
-                            'email_to_near_to_near_to_expire_reponsible': record.hr_responsible_id.work_email,
                             'email_subject_near_to_expire_reponsible': 'Hello This Is contract Expire Email To Reponsible', })
-                    if record.project_id.near_to_expire_email_to_customer:
-                        temp_id = self.env.ref(
-                            'contract_management_setu.email_template_for_contract__near_to_expire_customer').id
-                        template_customer = self.env['mail.template'].browse(temp_id)
-                        template_customer.with_context(view_context).send_mail(record.id, force_send=True)
-                    if record.project_id.near_to_expire_email_to_reponsible:
-                        temp_id = self.env.ref(
-                            'contract_management_setu.email_template_for_contract_near_to_expire_reponsible').id
-                        template_responsible = self.env['mail.template'].browse(temp_id)
-                        template_responsible.with_context(view_context).send_mail(record.id, force_send=True)
+
+                    email_values = {
+                        'email_to': ','.join(partner.email for partner in emails)
+                    }
+                    temp_id = self.env.ref(
+                        'contract_management_setu.email_template_for_contract__near_to_expire_customer').id
+                    template_customer = self.env['mail.template'].browse(temp_id)
+                    template_customer.with_context(view_context).send_mail(record.id, force_send=True, email_values=email_values)
+
 
