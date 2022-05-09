@@ -163,7 +163,7 @@
                                         </div>
 
                                         <div class="text-muted o_kanban_record_subtitle o_hr_contract_job_id">
-                                            <span class="fa fa-clock-o mr-2"/>
+                                            <span class="fa fa-clock-o mr-2" role="img"/>
                                             <field name="from_date"/>
                                             <i class="fa fa-long-arrow-right mx-2 oe_read_only"
                                                aria-label="Arrow icon"
