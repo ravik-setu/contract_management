@@ -54,6 +54,7 @@
                         <th class="text-center">Hours Per Day</th>
                         <th class="text-center">Contract Quantity</th>
                         <th class="text-center">Total Contract Service</th>
+
                     </tr>
                 </thead>
                 <t t-foreach="data" t-as="data">
@@ -325,6 +326,12 @@
                 <p>There are currently no time sheets for your account.</p>
             </t>
             <t t-if="timesheet" t-call="portal.portal_table">
+                <a class="btn btn-secondary float-right mb-3 mr-3"
+                   t-att-href="'/my/contracts/%s/download/timesheet'%(timesheet.contract_id.id)">
+                    <i class="fa fa-download"/>
+                    Download
+                </a>
+
                 <thead>
                     <tr class="active">
                         <th class="text-center">Date</th>

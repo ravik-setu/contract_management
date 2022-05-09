@@ -1,7 +1,19 @@
-from odoo import fields
+import binascii
+
+from odoo.exceptions import AccessError, MissingError, ValidationError
+from odoo.fields import Command
 from odoo.http import request
+
+from odoo.addons.payment.controllers import portal as payment_portal
+from odoo.addons.payment import utils as payment_utils
+from odoo.addons.portal.controllers.mail import _message_post_helper
+from odoo.addons.portal.controllers import portal
+from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
+from odoo import fields
+from odoo.http import request,content_disposition
 from odoo.addons.portal.controllers import portal
 from odoo import http, _
+from odoo.exceptions import AccessError, MissingError, ValidationError
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 
 
@@ -34,7 +46,7 @@ class CustomerPortal(portal.CustomerPortal):
         return request.render("contract_management_setu.portal_my_contracts", values)
 
     @http.route(['/my/contracts/<int:contract_id>'], type='http', auth="user", website=True)
-    def portal_contract_page(self, contract_id, **kw):
+    def portal_contract_page(self, contract_id, report_type=None, download=False, **kw):
         contract = request.env['hr.contract']
         data = contract.search([('id', '=', contract_id)])
 
@@ -116,3 +128,16 @@ class CustomerPortal(portal.CustomerPortal):
 
         }
         return request.render("contract_management_setu.portal_my_reports", values)
+
+
+    @http.route(['/my/contracts/<int:contract_id>/download/timesheet'], type='http', auth="user", website=True)
+    def prepare_timesheets_download(self, contract_id,**kw):
+        contract = request.env['hr.contract'].sudo().search([('id', '=', contract_id)])
+        content, content_type = request.env.ref('contract_management_setu.portal_timesheet_report').sudo()._render_qweb_pdf(res_ids=contract.timesheet_ids.ids)
+        reporthttpheaders = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Length', len(content)),
+        ]
+        filename = "demo.pdf"
+        reporthttpheaders.append(('Content-Disposition', content_disposition(filename)))
+        return request.make_response(content, headers=reporthttpheaders)
