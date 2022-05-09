@@ -22,7 +22,8 @@
         'data/task_created_email_to_customer.xml',
         'data/near_to_expire_email_automation.xml',
         'data/near_to_expired_contract_email_to_customer.xml',
-        'report/hr_contract_report_analysis.xml'
+        'report/hr_contract_report_analysis.xml',
+        'data/email_template.xml',
     ],
     'demo': [
     ],
