@@ -39,7 +39,7 @@
                     </button>
                 </xpath>
                 <xpath expr="//page[@name='settings']" position="after">
-                    <page string="Email Sent">
+                    <page string="Contract Expiry Notification">
                         `   <group>
                                 <group>
                                     <h2>
@@ -48,7 +48,7 @@
                                 </group>
                                 <group>
                                     <h2>
-                                        Reponsible
+                                        Responsible
                                     </h2>
                                 </group>
                             </group>
