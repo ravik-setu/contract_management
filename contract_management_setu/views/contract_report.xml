@@ -32,6 +32,8 @@
             <t t-if="contract" t-call="portal.portal_table">
                 <thead>
                     <tr class="active">
+                        <th class="text-center">Contract Name</th>
+                        <th class="text-center">Project Name</th>
                         <th class="text-center">Contract Date</th>
                         <th class="text-center">Contract Qty</th>
                         <th class="text-center">Total Contract Service</th>
@@ -42,6 +44,12 @@
                 </thead>
                 <t t-foreach="contract" t-as="contract">
                     <tr>
+                        <td class="text-center">
+                            <span t-esc="contract.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-esc="contract.sudo().project_id.name"/>
+                        </td>
                         <td class="text-center">
                             <span t-field="contract.from_date"/>
                             To
@@ -60,10 +68,12 @@
                         </td>
                         <td class="text-center">
                             <div class="progress">
+                                    <t t-set="progressbar_sign" t-value="'%'" />
+                                <t t-set="progressbar_count" t-value="'%s%s'%(round(contract.utilised_quantity),progressbar_sign)" />
                                 <div class="progress-bar " role="progressbar"
-                                     t-att-style="'width: %spx' %round(contract.utilised_quantity)" aria-valuenow="0"
+                                     t-att-style="'width: %s' %progressbar_count" aria-valuenow="0"
                                      aria-valuemin="0"
-                                     aria-valuemax="100"/>
+                                     aria-valuemax="100"><t t-esc="round(contract.utilised_quantity)"/></div>
                             </div>
                         </td>
                         <!--                        <td class="text-center">-->
