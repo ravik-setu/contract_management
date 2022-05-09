@@ -50,6 +50,8 @@ class HrContract(models.Model):
             contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
             contract.utilised_quantity = contract.total_contract_service_hours and (
                         total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
+            if contract.utilised_quantity > contract.total_contract_service_hours and not contract.project_id.allow_over_timesheet:
+                raise UserError("Sorry you can not enter task entry more than contract hours")
 
     @api.constrains('contract_quantity', 'timesheet_ids')
     def check_contract_quantity(self):

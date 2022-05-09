@@ -11,6 +11,8 @@
                     <field name="expire_percent" widget="percentage" groups="account.group_account_invoice"/>
                     <field name="is_contract_use" groups="account.group_account_invoice"/>
                     <field name="default_contract"  groups="account.group_account_invoice"  domain="[('state','=','open'),('partner_id','=', partner_id)]" attrs="{'invisible': [('is_contract_use', '=', False)]}"/>
+                    <field name="allow_over_timesheet" groups="account.group_account_invoice"
+                           attrs="{'invisible': [('is_contract_use', '=', False)]}"/>
                 </xpath>
 
                 <xpath expr="//div[@name='button_box']" position="inside">

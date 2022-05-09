@@ -23,6 +23,7 @@ class ProjectProject(models.Model):
     task_create_email_to_reponsible = fields.Boolean(string="Send Task Create Email To Reponsible", default=False)
     expired_contract_email_to_reponsible = fields.Boolean(string="Send Contract Expiry Email To Reponsible", default=False)
     near_to_expire_email_to_reponsible = fields.Boolean(string="Send Near To Expire Email To Reponsible", default=False)
+    allow_over_timesheet = fields.Boolean(string="Allow Over Timesheet", default=False)
 
     def action_view_customer_invoice(self):
         """
