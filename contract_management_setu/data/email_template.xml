@@ -55,17 +55,16 @@
                                                 <tr>
                                                     <td valign="top" style="font-size: 13px;">
                                                         <div>
-                                                            Dear <t t-out="object.partner_id.name or ''"/>,
+                                                            Dear<t t-out="object.partner_id.name or ''"/>,
                                                             <br/>
                                                             <br/>
-
                                                             It is always great working with you and providing Services
                                                             that you demand.
                                                             <br/>
                                                             <br/>
                                                             As the Contract
                                                             <t t-out="object.name or ''"/>
-                                                            duration agreed between Setu Consulting Services Pvt Ltd and
+                                                            duration agreed between Setu Consulting Services Pvt Ltd
                                                             for project
                                                             <t t-out="object.project_id.id or ''"/>
                                                             is from
@@ -73,7 +72,8 @@
                                                             to
                                                             <t t-out="object.to_date or ''"/>
                                                             , this is to inform you that as contract period is expiring
-                                                            on <t t-out="object.to_date or ''"/>. the services provided by us will be
+                                                            on<t t-out="object.to_date or ''"/>. the services provided
+                                                            by us will be
                                                             terminated from this date onwards.
                                                             <br/>
                                                             <br/>
@@ -174,7 +174,7 @@
                                                 <tr>
                                                     <td valign="top" style="font-size: 13px;">
                                                         <div>
-                                                            Dear <t t-out="object.partner_id.name or ''"/>,
+                                                            Dear<t t-out="object.partner_id.name or ''"/>,
                                                             <br/>
                                                             <br/>
                                                             It is always great working with you and providing Services
@@ -183,7 +183,7 @@
                                                             <br/>
                                                             As the Contract
                                                             <t t-out="object.name or ''"/>
-                                                            duration agreed between Setu Consulting Services Pvt Ltd and
+                                                            duration agreed between Setu Consulting Services Pvt Ltd
                                                             for Project
                                                             <t t-out="object.project_id.id or ''"/>
                                                             is from
@@ -229,7 +229,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td valign="middle" align="left" style="opacity: 0.7;">
-                                                        <t t-out="object.company_id.name or ''" />
+                                                        <t t-out="object.company_id.name or ''"/>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -242,6 +242,158 @@
                 </table>
             </field>
             <field name="auto_delete" eval="False"/>
+        </record>
+
+        <record id="email_template_for_contract_expiry_customer" model="mail.template">
+            <field name="name">Email Template For Customer Contract Expired</field>
+            <field name="email_to">{{ ctx.get('email_to_contract_expiry_customer','')}}</field>
+            <field name="subject">{{ ctx.get('email_subject_contract_expiry_customer','' )}}</field>
+            <field name="model_id" ref="contract_management_setu.model_hr_contract"/>
+            <field name="body_html" type="html">
+                <p>
+                    Hello This Is Test Email For Customer
+                </p>
+            </field>
+        </record>
+
+        <record id="ir_cron_automatic_near_to_expire" model="ir.cron">
+            <field name="name">Send Email On Near To Expire Contract</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            <field name="active" eval="False"/>
+            <field name="state">code</field>
+            <field name="code">model.near_to_expire_email_automation()</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-1</field>
+        </record>
+
+        <record id="email_template_for_contract__near_to_expire_customer" model="mail.template">
+            <field name="name">Customer Contract Expire Template</field>
+            <field name="email_to">{{ ctx.get('email_to_near_to_near_to_expire_customer','')}}</field>
+            <field name="subject">{{ ctx.get('subject','')}}</field>
+            <field name="model_id" ref="contract_management_setu.model_hr_contract"/>
+            <field name="body_html" type="html">
+                <p>
+                    Hello This Is Test Email For Customer Contract Near To Expire
+                </p>
+            </field>
+        </record>
+
+        <record id="email_template_for_task_created_customer" model="mail.template">
+            <field name="name">Email Template For Customer Task Created</field>
+            <field name="email_to">{{ ctx.get('email_to_task_create_customer','')}}</field>
+            <field name="subject">{{ ctx.get('email_subject_task_create_customer','')}}</field>
+            <field name="model_id" ref="contract_management_setu.model_project_task"/>
+            <field name="body_html" type="html">
+                <table border="0" cellpadding="0" cellspacing="0"
+                       style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+                    <tr>
+                        <td align="center">
+                            <table border="0" cellpadding="0" cellspacing="0" width="590"
+                                   style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                                <tbody>
+                                    <!-- HEADER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590"
+                                                   style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle">
+                                                        <span style="font-size: 10px;">Your Contract</span>
+                                                        <br/>
+                                                        <span style="font-size: 20px; font-weight: bold;"
+                                                              t-out="object.name or ''">Abigail Peterson
+                                                        </span>
+                                                    </td>
+                                                    <td valign="middle" align="right">
+                                                        <img t-attf-src="/logo.png?company={{ object.company_id.id }}"
+                                                             style="padding: 0px; margin: 0px; height: auto; width: 80px;"
+                                                             t-att-alt="object.company_id.name"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align:center;">
+                                                        <hr width="100%"
+                                                            style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- CONTENT -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590"
+                                                   style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="top" style="font-size: 13px;">
+                                                        <div>
+                                                            Dear <t t-out="object.partner_id.name or ''"/>,
+                                                            <br/>
+                                                            <br/>
+                                                            It is always great working with you and providing Services
+                                                            that you demand.
+                                                            <br/>
+                                                            <br/>
+                                                            For the Contract
+                                                            <t t-out="object.contract_id.name or ''"/>
+                                                            duration agreed between Setu Consulting Services Pvt Ltd
+                                                            for Project
+                                                            <t t-out="object.project_id.name or ''"/>
+                                                            from
+                                                            <t t-out="object.contract_id.from_date or ''"/>
+                                                            to
+                                                            <t t-out="object.contract_id.to_date or ''"/>
+                                                            , this is to inform you that New Task with name
+                                                            <t t-out="object.name or ''"/>
+                                                            is created for this same Project.
+                                                            <br/>
+                                                            <br/>
+                                                            Hence it is now very easy for you to get details, status and
+                                                            progress about your Project from ERP itself that helps for
+                                                            further evaluation.
+                                                            <br/>
+                                                            <br/>
+                                                            Feel free to contact us any time for any queries.
+                                                            <br/>
+                                                            <br/>Thank you.
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:center;">
+                                                        <hr width="100%"
+                                                            style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <!-- FOOTER -->
+                                    <tr>
+                                        <td align="center" style="min-width: 590px;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="590"
+                                                   style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                                                <tr>
+                                                    <td valign="middle" align="left">
+                                                        <t t-out="object.company_id.name or ''">YourCompany</t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="middle" align="left" style="opacity: 0.7;">
+                                                        <t t-out="object.company_id.name or ''"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </field>
         </record>
 
     </data>
