@@ -19,6 +19,7 @@ class HrContractReportAnalysis(models.Model):
     payment_id = fields.Many2one('account.payment', string="Payment")
     payment_date = fields.Date(string="Payment Date")
     payment_amount = fields.Float(string="Payment Amount")
+    remaining_quantity = fields.Char(string="Remaining Quantity")
 
     def init(self):
         """
@@ -40,7 +41,8 @@ class HrContractReportAnalysis(models.Model):
                     tmp.invoice_amount,
                     tmp.payment_id,
                     tmp.payment_date,
-                    tmp.payment_amount
+                    tmp.payment_amount,
+                    tmp.remaining_quantity
             FROM (
                     {} 
                     UNION 
@@ -66,7 +68,8 @@ class HrContractReportAnalysis(models.Model):
                 account_move.amount_total AS invoice_amount,
                 null::integer AS payment_id,
                 null::date AS payment_date,
-                null::integer AS payment_amount
+                null::integer AS payment_amount,
+                CONCAT(contract.remaining_quantity, ' hours') AS remaining_quantity
             FROM account_move
                 JOIN hr_contract contract ON contract.id = account_move.contract_id
                 JOIN res_partner partner on partner.id = contract.partner_id
@@ -92,7 +95,8 @@ class HrContractReportAnalysis(models.Model):
                 invoice.amount_total AS invoice_amount,
                 payment.id AS payment_id,
                 invoice.date AS payment_date,
-                payment.amount AS payment_amount
+                payment.amount AS payment_amount,
+                CONCAT(contract.remaining_quantity, ' hours') AS remaining_quantity
            FROM account_payment payment
                  JOIN account_move move ON move.id = payment.move_id
                  JOIN account_move_line line ON line.move_id = move.id
