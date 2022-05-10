@@ -6,7 +6,7 @@
     'category': 'Accounting',
     'description': 'Contract Management System',
     'website': 'https://www.odoo.com/app/invoicing',
-    'depends': ['documents_hr_contract', 'timesheet_grid', 'project', 'account','hr_contract','hr_expense'],
+    'depends': ['documents_hr_contract', 'timesheet_grid', 'project', 'account', 'hr_contract', 'hr_expense'],
     'data': [
         'security/ir.model.access.csv',
         'views/contract_management_view.xml',
@@ -20,7 +20,9 @@
         'views/contract_report.xml',
         'report/hr_contract_report_analysis.xml',
         'data/email_template.xml',
-        'data/ir_cron.xml'
+        'data/ir_cron.xml',
+        'report/hr_contract_report_analysis.xml',
+        'report/contract_timesheet_templates.xml',
     ],
     'demo': [
     ],
