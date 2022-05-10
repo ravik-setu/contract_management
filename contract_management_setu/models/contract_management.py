@@ -234,13 +234,10 @@ class HrContract(models.Model):
             emil_to = ','.join(partner.email for partner in emails)
             if emil_to:
                 view_context = self.env.context.copy()
-                view_context.update({
-                    'email_subject_contract_expiry_customer': 'Hello This Is Subject For Customer Your Contract Expired',
-                    'email_subject_contract_expiry_reponsible': 'Hello This Is Subject For Responsible Your Contract Expired', })
                 email_values = {
                     'email_to': emil_to
                 }
-                temp_id = self.env.ref('contract_management_setu.email_template_for_contract_expiry_customer').id
+                temp_id = self.env.ref('contract_management_setu.contract_expired_email_template').id
                 template_responsible = self.env['mail.template'].browse(temp_id)
                 try:
                     template_responsible.send_mail(contract.id, force_send=True,
@@ -264,16 +261,11 @@ class HrContract(models.Model):
             emil_to = ','.join(partner.email for partner in emails)
             view_context = self.env.context.copy()
             if emil_to:
-                view_context.update(
-                    {
-                        'email_subject_contract_near_to_expire_customer': '',
-                        'email_subject_near_to_expire_reponsible': 'Hello This Is contract Expire Email To Reponsible', })
-
                 email_values = {
                     'email_to': emil_to
                 }
                 temp_id = self.env.ref(
-                    'contract_management_setu.email_template_for_contract__near_to_expire_customer').id
+                    'contract_management_setu.contract_expiry_email_template').id
                 template_customer = self.env['mail.template'].browse(temp_id)
                 try:
                     template_customer.with_context(view_context).send_mail(record.id, force_send=True,

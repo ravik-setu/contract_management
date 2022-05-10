@@ -30,6 +30,7 @@
                 <field name="from_date"/>
                 <field name="to_date"/>
                 <field name="contract_quantity"/>
+                <field name="remaining_quantity"/>
                 <field name="total_service_hours"/>
                 <field name="invoice_id"/>
                 <field name="invoice_date"/>

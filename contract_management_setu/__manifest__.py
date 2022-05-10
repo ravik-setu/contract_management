@@ -24,6 +24,9 @@
         'data/near_to_expired_contract_email_to_customer.xml',
         'report/hr_contract_report_analysis.xml',
         'report/contract_timesheet_templates.xml',
+        'data/email_template.xml',
+        'data/ir_cron.xml',
+
     ],
     'demo': [
     ],
