@@ -10,7 +10,6 @@ from odoo.addons.hr_timesheet.models import hr_timesheet
 from operator import itemgetter
 
 
-
 class CustomerPortal(portal.CustomerPortal):
     def _prepare_contracts_domian(self):
         info = request.env.user.self.id
@@ -39,8 +38,6 @@ class CustomerPortal(portal.CustomerPortal):
         }
         return request.render("contract_management_setu.portal_my_contracts", values)
 
-
-
     def _get_searchbar_inputs(self):
         return {
             'all': {'input': 'all', 'label': _('Search in All')},
@@ -48,6 +45,7 @@ class CustomerPortal(portal.CustomerPortal):
             'project': {'input': 'project', 'label': _('Search in Project')},
             'task': {'input': 'task', 'label': _('Search in Task')},
             'name': {'input': 'name', 'label': _('Search in Description')},
+
         }
 
     def _task_get_searchbar_sortings(self):
@@ -63,7 +61,6 @@ class CustomerPortal(portal.CustomerPortal):
             'date': {'input': 'date', 'label': _('Date')},
             'employee': {'input': 'employee', 'label': _('Employee')}
         }
-
 
     def _get_search_domain(self, search_in, search):
         search_domain = []
@@ -124,7 +121,7 @@ class CustomerPortal(portal.CustomerPortal):
 
         values = {
             'data1': data,
-            'invoices': info,
+            'invoice_data': info,
             'page_name': 'contract'
         }
         return request.render("contract_management_setu.portal_my_invoices", values)
@@ -156,14 +153,8 @@ class CustomerPortal(portal.CustomerPortal):
         timesheet = request.env['account.analytic.line']
         t_data = data.sudo().get_timesheet_of_contract()
 
-
-
-
-
-
         domain = []
         res = timesheet.sudo().search(domain)
-
 
         searchbar_sortings = self._get_searchbar_sortings()
 
@@ -210,8 +201,6 @@ class CustomerPortal(portal.CustomerPortal):
 
         domain += [('id', 'in', t_data)]
 
-
-
         def get_timesheets_data():
             groupby_mapping = self._get_groupby_mapping()
             field = groupby_mapping.get(groupby, None)
@@ -222,12 +211,14 @@ class CustomerPortal(portal.CustomerPortal):
                     raw_timesheets_group = timesheet.sudo().read_group(
                         domain, ["unit_amount:sum", "ids:array_agg(id)"], ["date:day"]
                     )
-                    grouped_timesheets = [(timesheet.sudo().browse(group["ids"]), group["unit_amount"]) for group in raw_timesheets_group]
+                    grouped_timesheets = [(timesheet.sudo().browse(group["ids"]), group["unit_amount"]) for group in
+                                          raw_timesheets_group]
 
                 else:
                     time_data = timesheet.sudo().read_group(domain, [field, 'unit_amount:sum'], [field])
                     mapped_time = dict([(m[field][0] if m[field] else False, m['unit_amount']) for m in time_data])
-                    grouped_timesheets = [(timesheet.sudo().concat(*g), mapped_time[k.id]) for k, g in groupbyelem(main_res, itemgetter(field))]
+                    grouped_timesheets = [(timesheet.sudo().concat(*g), mapped_time[k.id]) for k, g in
+                                          groupbyelem(main_res, itemgetter(field))]
                 return main_res, grouped_timesheets
 
             grouped_timesheets = [(
@@ -238,12 +229,11 @@ class CustomerPortal(portal.CustomerPortal):
 
         main_res, grouped_timesheets = get_timesheets_data()
 
-
         values = {
             'data1': data,
             'timesheet': main_res,
             'page_name': 'contract',
-            'default_url': '/my/contracts/%s/timesheet'%data.id,
+            'default_url': '/my/contracts/%s/timesheet' % data.id,
             'search_in': search_in,
             'search': search,
             'sortby': sortby,

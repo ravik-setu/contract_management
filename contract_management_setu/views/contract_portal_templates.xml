@@ -9,19 +9,20 @@
                 <t t-else="">Contracts</t>
             </li>
             <li t-if="data1" class="breadcrumb-item active">
-                <a t-if="invoices or payments or timesheet" t-att-href="'/my/contracts/%s'%data1.id">
+                <a t-if="invoice_data or payments or timesheet" t-att-href="'/my/contracts/%s'%data1.id">
                     <t t-esc="data1.name" t-if="data1.name != '/'"/>
                 </a>
                 <t t-else="">
                     <t t-esc="data1.name"/>
                 </t>
             </li>
-            <li t-if="invoices" class="breadcrumb-item active">
-                Invoices
-            </li>
             <li t-if="payments" class="breadcrumb-item active">
                 Payments
             </li>
+            <li t-if="invoice_data" class="breadcrumb-item active">
+                Invoices
+            </li>
+
 
         </xpath>
     </template>
@@ -221,10 +222,10 @@
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Invoices</t>
             </t>
-            <t t-if="not invoices">
+            <t t-if="not invoice_data">
                 <p>There are currently no Invoices for your account.</p>
             </t>
-            <t t-if="invoices" t-call="portal.portal_table">
+            <t t-if="invoice_data" t-call="portal.portal_table">
                 <thead>
                     <tr class="active">
                         <th class="text-center">Invoice#</th>
@@ -234,25 +235,49 @@
                         <th class="text-center">Amount Due</th>
                     </tr>
                 </thead>
-                <t t-foreach="invoices" t-as="invoices">
+                <t t-foreach="invoice_data" t-as="invoice">
                     <tr>
 
                         <td class="text-center">
-                            <a t-att-href="invoices.get_portal_url()" t-att-title="invoices.name">
-                                <span t-field="invoices.name"/>
+                            <a t-att-href="invoice.get_portal_url()" t-att-title="invoice.name">
+                                <span t-field="invoice.name"/>
                             </a>
                         </td>
                         <td class="text-center">
-                            <span t-field="invoices.invoice_date"/>
+                            <span t-field="invoice.invoice_date"/>
                         </td>
                         <td class="text-center">
-                            <span t-field="invoices.invoice_date_due"/>
+                            <span t-field="invoice.invoice_date_due"/>
                         </td>
                         <td class="text-center">
-                            <span t-field="invoices.state"/>
+                            <t t-if="invoice.state == 'posted' and invoice.payment_state not in ('in_payment', 'paid', 'reversed')">
+                                <span class="badge badge-pill badge-info">
+                                    <i class="fa fa-fw fa-clock-o" aria-label="Opened" title="Opened" role="img"></i>
+                                    <span class="d-none d-md-inline">Waiting for Payment</span>
+                                </span>
+                            </t>
+                            <t t-if="invoice.state == 'posted' and invoice.payment_state in ('paid', 'in_payment')">
+                                <span class="badge badge-pill badge-success">
+                                    <i class="fa fa-fw fa-check" aria-label="Paid" title="Paid" role="img"></i>
+                                    <span class="d-none d-md-inline">Paid</span>
+                                </span>
+                            </t>
+                            <t t-if="invoice.state == 'posted' and invoice.payment_state == 'reversed'">
+                                <span class="badge badge-pill badge-success">
+                                    <i class="fa fa-fw fa-check" aria-label="Reversed" title="Reversed" role="img"></i>
+                                    <span class="d-none d-md-inline">Reversed</span>
+                                </span>
+                            </t>
+                            <t t-if="invoice.state == 'cancel'">
+                                <span class="badge badge-pill badge-warning">
+                                    <i class="fa fa-fw fa-remove" aria-label="Cancelled" title="Cancelled"
+                                       role="img"></i>
+                                    <span class="d-none d-md-inline">Cancelled</span>
+                                </span>
+                            </t>
                         </td>
                         <td class="text-center">
-                            <span t-field="invoices.amount_residual"/>
+                            <span t-field="invoice.amount_residual"/>
                         </td>
                     </tr>
                 </t>
@@ -326,11 +351,17 @@
                 <p>There are currently no time sheets for your account.</p>
             </t>
             <t t-if="timesheet" t-call="portal.portal_table">
-                <a class="btn btn-secondary float-right mb-3 mr-3"
-                   t-att-href="'/my/contracts/%s/download/timesheet'%(timesheet.contract_id.id)">
-                    <i class="fa fa-download"/>
-                    Download
-                </a>
+                <div class="float-right">
+                    <a class="btn btn-secondary float-right mt-2 mb-3 mr-3"
+                       t-att-href="'/my/contracts/%s/download/timesheet'%(timesheet.contract_id.id)">
+                        <i class="fa fa-download"/>
+                        Download
+                    </a>
+                    <!--                    <br/>-->
+                    <!--                    <t t-set="total" t-value="sum(timesheet.mapped('unit_amount'))"/>Total-->
+                    <!--                    <t t-esc="total"/>-->
+                </div>
+
 
                 <thead>
                     <tr class="active">
@@ -342,6 +373,7 @@
                     </tr>
                 </thead>
                 <t t-foreach="timesheet" t-as="timesheet">
+
                     <tr>
                         <td class="text-center">
                             <span t-field="timesheet.date"/>
