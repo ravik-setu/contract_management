@@ -55,7 +55,7 @@
                                                 <tr>
                                                     <td valign="top" style="font-size: 13px;">
                                                         <div>
-                                                            Dear<t t-out="object.partner_id.name or ''"/>,
+                                                            Dear <t t-out="object.partner_id.name or ''"/>,
                                                             <br/>
                                                             <br/>
                                                             It is always great working with you and providing Services
@@ -66,7 +66,7 @@
                                                             <t t-out="object.name or ''"/>
                                                             duration agreed between Setu Consulting Services Pvt Ltd
                                                             for project
-                                                            <t t-out="object.project_id.id or ''"/>
+                                                            <t t-out="object.project_id.name or ''"/>
                                                             is from
                                                             <t t-out="object.from_date or ''"/>
                                                             to
@@ -174,7 +174,7 @@
                                                 <tr>
                                                     <td valign="top" style="font-size: 13px;">
                                                         <div>
-                                                            Dear<t t-out="object.partner_id.name or ''"/>,
+                                                            Dear <t t-out="object.partner_id.name or ''"/>,
                                                             <br/>
                                                             <br/>
                                                             It is always great working with you and providing Services
@@ -185,7 +185,7 @@
                                                             <t t-out="object.name or ''"/>
                                                             duration agreed between Setu Consulting Services Pvt Ltd
                                                             for Project
-                                                            <t t-out="object.project_id.id or ''"/>
+                                                            <t t-out="object.project_id.name or ''"/>
                                                             is from
                                                             <t t-out="object.from_date or ''"/>
                                                             to
