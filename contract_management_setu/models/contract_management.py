@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
+from datetime import date,datetime,timedelta
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class HrContract(models.Model):
     expiry_status = fields.Selection([
         ('running', 'Running'), ('near_to_expire', 'Near To Expire'), ('expired', 'Expired')],
         string="Expiry Status", compute="_compute_expiry_status", store=True)
+    is_auto_renewal = fields.Boolean(string="Is Auto Renewal?")
 
     @api.depends('contract_uom', 'hours_per_day', 'contract_quantity', 'timesheet_ids.unit_amount')
     def _compute_total_contract_service_hours(self):
@@ -191,8 +193,6 @@ class HrContract(models.Model):
             contract_used = contract.utilised_quantity and (contract.utilised_quantity / 100)
             if contract_expire_percent < contract_used < 1:
                 contract.expiry_status = 'near_to_expire'
-            elif contract_used == 1:
-                contract.expiry_status = 'expired'
             else:
                 contract.expiry_status = 'running'
 
@@ -274,3 +274,44 @@ class HrContract(models.Model):
                     _logger.info(
                         "Error {} comes at the time of sending near to expire email contract {}:{}".format(e, record.id,
                                                                                                            record.name))
+
+    def auto_renew_contract(self):
+        _logger.info("Cron : Auto Renew Contract start execution")
+        contracts = self.search(
+            [('state', '=', 'open'), ('is_auto_renewal', '=', True), ('to_date', '<', date.today()),
+             ('partner_id', '!=', False)])
+        for contract in contracts:
+            new_contract = self
+            contract_day = contract.to_date - contract.from_date
+            start_date = contract.to_date + timedelta(days=1)
+            end_date = contract.to_date + timedelta(days=contract_day.days + 1)
+            vals = {
+                'name': contract.name,
+                'partner_id': contract.partner_id.id,
+                'project_id': contract.project_id.id,
+                'from_date': start_date,
+                'to_date': end_date,
+                'hr_responsible_id': contract.hr_responsible_id.id,
+                'is_maintain_timesheet': contract.is_maintain_timesheet,
+                'is_auto_renewal': contract.is_auto_renewal,
+                'contract_uom': contract.contract_uom,
+                'contract_quantity': contract.contract_quantity,
+                'total_contract_service_hours': contract.total_contract_service_hours,
+                'wage': contract.wage,
+                'state': 'open'
+            }
+            try:
+                new_contract = self.create(vals)
+            except Exception as e:
+                _logger.info(
+                    "Error {} comes at the time of creating new contract of contract {}: {}".format(e, contract.id,
+                                                                                                    contract.name))
+            contract.write({'state': 'close'})
+            _logger.info(
+                "Contract {}:{} marked as expire and new contract created {}:{}".format(contract.id, contract.name,
+                                                                                        new_contract.id,
+                                                                                        new_contract.name))
+            if new_contract:
+                projects = self.env['project.project'].search([('default_contract', '=', contract.id)])
+                projects.write({'default_contract': new_contract.id})
+        _logger.info("Cron : Auto Renew Contract executed successfully")

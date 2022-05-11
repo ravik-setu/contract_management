@@ -92,6 +92,7 @@
                                 <field name="hr_responsible_id" string="Responsible"/>
                                 <field name="company_id"/>
                                 <field name="is_maintain_timesheet"/>
+                                <field name="is_auto_renewal"/>
                                 <field name="wage" invisible="1"/>
                             </group>
 

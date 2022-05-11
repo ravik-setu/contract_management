@@ -11,5 +11,15 @@
             <field name='interval_type'>days</field>
             <field name="numbercall">-1</field>
         </record>
+        <record id="ir_cron_automatic_renew" model="ir.cron">
+            <field name="name">Auto Renew Contract</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            <field name="active" eval="False"/>
+            <field name="state">code</field>
+            <field name="code">model.auto_renew_contract()</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-1</field>
+        </record>
     </data>
 </odoo>
