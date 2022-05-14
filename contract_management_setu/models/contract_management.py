@@ -41,7 +41,7 @@ class HrContract(models.Model):
         Added By: Jigna J Savaniya | Date: 6th April,2022 | Task : 600
         Use: This method is used to calculate contract service hours as per contract uom
         """
-        for contract in self:
+        for contract in self.filtered(lambda c: c.partner_id):
             if contract.contract_uom == 'hours':
                 contract.total_contract_service_hours = contract.contract_quantity
                 contract.hours_per_day = 0.00
@@ -51,7 +51,7 @@ class HrContract(models.Model):
             total_timesheet = sum(contract.timesheet_ids.mapped('unit_amount'))
             contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
             contract.utilised_quantity = contract.total_contract_service_hours and (
-                        total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
+                    total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
             if contract.utilised_quantity > contract.total_contract_service_hours and not contract.project_id.allow_over_timesheet:
                 raise UserError("Sorry you can not enter task entry more than contract hours")
 
@@ -61,7 +61,7 @@ class HrContract(models.Model):
         Added By: Nidhi Dhruv | Date: 11th April,2022 | Task : 610
         Use:  Generates Error if contract_quantity is decreased then the mentioned contract_quantity
         """
-        for contract in self:
+        for contract in self.filtered(lambda c: c.partner_id):
             sum_of_unit_amount = sum(contract.timesheet_ids.mapped('unit_amount'))
             if self.contract_quantity < sum_of_unit_amount or sum_of_unit_amount > contract.total_contract_service_hours:
                 raise ValidationError(_("Cannot descrease the Contract Quantity as timesheet already exists "))
@@ -210,16 +210,17 @@ class HrContract(models.Model):
     @api.model
     def create(self, vals):
         res = super(HrContract, self).create(vals)
-        if res.contract_quantity <= 0:
-            raise UserError("Total Contract Service Hours must be positive")
-        if res.to_date < res.from_date:
-            raise UserError("End date must be greater than start date")
+        if res.partner_id:
+            if res.contract_quantity <= 0:
+                raise UserError("Total Contract Service Hours must be positive")
+            if res.to_date < res.from_date:
+                raise UserError("End date must be greater than start date")
         return res
 
     def write(self, vals):
         res = super(HrContract, self).write(vals)
         if vals.get('state') == 'close':
-            for rec in self:
+            for rec in self.filtered(lambda contract: contract.partner_id):
                 if rec.project_id.is_contract_use:
                     rec.send_email_on_contract_expired()
         return res
@@ -315,3 +316,13 @@ class HrContract(models.Model):
                 projects = self.env['project.project'].search([('default_contract', '=', contract.id)])
                 projects.write({'default_contract': new_contract.id})
         _logger.info("Cron : Auto Renew Contract executed successfully")
+
+    def action_open_contract_form(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "hr.contract",
+            "views": [[self.env.ref('hr_contract.hr_contract_view_form').id, "form"]],
+            "res_id": self.id,
+            "view_id": self.env.ref('hr_contract.hr_contract_view_form').id
+        }
