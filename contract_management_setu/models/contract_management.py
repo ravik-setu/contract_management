@@ -34,6 +34,7 @@ class HrContract(models.Model):
         ('running', 'Running'), ('near_to_expire', 'Near To Expire'), ('expired', 'Expired')],
         string="Expiry Status", compute="_compute_expiry_status", store=True)
     is_auto_renewal = fields.Boolean(string="Is Auto Renewal?")
+    timesheet_hours = fields.Float(string="Timesheet Hours")
 
     @api.depends('contract_uom', 'hours_per_day', 'contract_quantity', 'timesheet_ids.unit_amount')
     def _compute_total_contract_service_hours(self):
@@ -52,6 +53,7 @@ class HrContract(models.Model):
             contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
             contract.utilised_quantity = contract.total_contract_service_hours and (
                     total_timesheet / contract.total_contract_service_hours) * 100 or 0.0
+            contract.timesheet_hours = total_timesheet
             if contract.utilised_quantity > contract.total_contract_service_hours and not contract.project_id.allow_over_timesheet:
                 raise UserError("Sorry you can not enter task entry more than contract hours")
 

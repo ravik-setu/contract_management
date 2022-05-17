@@ -75,7 +75,8 @@
                             <group attrs="{'readonly': [('state','not in',['draft','open'])]}">
                                 <field name="partner_id" required="1" domain="[('customer_rank','>', 0)]"/>
                                 <field name="project_id" required="1"
-                                       domain="[('is_contract_use','=', True),('partner_id', '=', partner_id)]"/>
+                                       domain="[('is_contract_use','=', True),('partner_id', '=', partner_id)]"
+                                       context="{'default_partner_id': partner_id}"/>
 
                                 <label for="from_date" string="Contract Duration" id="label_dates"/>
                                 <div class="o_row o_row_readonly">
@@ -197,6 +198,29 @@
             <field name="view_mode">kanban,tree,form</field>
             <field name="view_id" ref="customer_contract_kanban_view"/>
         </record>
+
+        <data noupdate="1">
+            <record id="hr_contract.action_hr_contract" model="ir.actions.act_window">
+                <field name="name">Contracts</field>
+                <field name="res_model">hr.contract</field>
+                <field name="view_mode">kanban,tree,form,activity</field>
+                <field name="domain">[('employee_id', '!=', False)]</field>
+                <field name="context">{'search_default_group_by_state': 1}</field>
+                <field name="search_view_id" ref="hr_contract.hr_contract_view_search"/>
+                <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('hr_contract.hr_contract_view_kanban')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('hr_contract.hr_contract_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('hr_contract.hr_contract_view_form')}),
+            (0, 0, {'view_mode': 'activity', 'view_id': ref('hr_contract.hr_contract_view_activity')}),
+            ]"
+                />
+                <field name="help" type="html">
+                    <p class="o_view_nocontent_smiling_face">
+                        Create a new contract
+                    </p>
+                </field>
+            </record>
+        </data>
 
         <!-- Menu Item -->
         <menuitem id="menu_customer_contract_root" name="Customer Contract"

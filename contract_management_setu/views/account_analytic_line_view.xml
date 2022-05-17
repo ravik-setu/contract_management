@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//search/group" position="inside">
                     <filter string="Contract" name="contract_id" domain="[]"
-                            context="{'group_by': 'contract_id'}"/>
+                            context="{'group_by': 'contract_id'}" groups="account.group_account_invoice"/>
                 </xpath>
             </field>
         </record>

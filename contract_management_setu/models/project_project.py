@@ -92,3 +92,29 @@ class ProjectProject(models.Model):
         contract_ids = self.env['hr.contract'].search([('project_id', '=', self.id)])
         contract_ids = contract_ids.filtered(lambda contract: contract.state == 'open')
         return contract_ids and contract_ids[0] or contract_ids
+
+    @api.model
+    def default_get(self, default_fields):
+        result = super().default_get(default_fields)
+        if self.env.context.get('default_partner_id'):
+            result.update({'partner_id': self.env.context.get('default_partner_id')})
+        return result
+
+    def raise_error_if_email_not_set(self):
+        if self.partner_id and not self.partner_id.email:
+            raise UserError("Email must be set into Customer {}".format(self.partner_id.name))
+
+    @api.model
+    def create(self, vals):
+        res = super(ProjectProject, self).create(vals)
+        if res.partner_id and (
+                res.task_create_email_to_customer or res.expired_contract_email_to_customer or res.near_to_expire_email_to_customer):
+            res.raise_error_if_email_not_set()
+        return res
+
+    def write(self, vals):
+        if vals.get('task_create_email_to_customer') or vals.get('expired_contract_email_to_customer') or vals.get(
+                'near_to_expire_email_to_customer'):
+            for rec in self:
+                rec.raise_error_if_email_not_set()
+        return super(ProjectProject, self).write(vals)

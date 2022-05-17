@@ -9,7 +9,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="project_id"/>
                     <field name="contract_id" domain="[('project_id', '=', project_id)]"
-                           options="{'no_create': True, 'no_edit': True}"/>
+                           options="{'no_create': True, 'no_edit': True}" groups="account.group_account_invoice"/>
                 </xpath>
             </field>
         </record>
