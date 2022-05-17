@@ -42,7 +42,7 @@
                 </xpath>
                 <xpath expr="//page[@name='settings']" position="after">
                     <page string="Contract Expiry Notification" groups="account.group_account_invoice">
-                        `   <group>
+                           <group>
                                 <group>
                                     <h2>
                                         Customer
