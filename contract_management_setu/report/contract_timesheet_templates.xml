@@ -38,8 +38,10 @@
                                 <span t-field="line.name"/>
                             </td>
                             <td class="text-right">
-                                <span t-if="is_uom_day" t-esc="line._get_timesheet_time_day()" t-options="{'widget': 'timesheet_uom'}"/>
-                                <span t-else="" t-field="line.unit_amount" t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}"/>
+                                <span t-if="is_uom_day" t-esc="line._get_timesheet_time_day()"
+                                      t-options="{'widget': 'timesheet_uom'}"/>
+                                <span t-else="" t-field="line.unit_amount"
+                                      t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}"/>
                             </td>
 
                         </tr>
@@ -76,6 +78,11 @@
                         <div class="col-lg-12">
                             <h2>
                                 <span>Timesheet Entries</span>
+                                <t t-if="len(docs.mapped('project_id')) == 1">
+                                    for the
+                                    <t t-esc="docs.sudo().mapped('project_id')[0].name"/>
+                                    Project
+                                </t>
                             </h2>
                         </div>
                     </div>

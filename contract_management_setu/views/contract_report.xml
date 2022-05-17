@@ -68,12 +68,15 @@
                         </td>
                         <td class="text-center">
                             <div class="progress">
-                                    <t t-set="progressbar_sign" t-value="'%'" />
-                                <t t-set="progressbar_count" t-value="'%s%s'%(round(contract.utilised_quantity),progressbar_sign)" />
+                                <t t-set="progressbar_sign" t-value="'%'"/>
+                                <t t-set="progressbar_count"
+                                   t-value="'%s%s'%(round(contract.utilised_quantity),progressbar_sign)"/>
                                 <div class="progress-bar " role="progressbar"
                                      t-att-style="'width: %s' %progressbar_count" aria-valuenow="0"
                                      aria-valuemin="0"
-                                     aria-valuemax="100"><t t-esc="round(contract.utilised_quantity)"/></div>
+                                     aria-valuemax="100">
+                                    <t t-esc="round(contract.utilised_quantity)"/>
+                                </div>
                             </div>
                         </td>
                         <!--                        <td class="text-center">-->
@@ -83,6 +86,6 @@
                     </tr>
                 </t>
             </t>
-        </t>
+            </t>
     </template>
 </odoo>
