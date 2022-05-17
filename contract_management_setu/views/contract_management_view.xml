@@ -14,7 +14,7 @@
                     <field name="from_date"/>
                     <field name="to_date"/>
                     <field name="contract_uom"/>
-                    <field name="hours_per_day"/>
+                    <field name="setu_hours_per_day"/>
                     <field name="total_contract_service_hours"/>
                     <field name="contract_quantity"/>
                     <field name="remaining_quantity"/>
@@ -99,7 +99,7 @@
 
                             <group attrs="{'readonly': [('state','not in',['draft','open'])]}">
                                 <field name="contract_uom" required="1"/>
-                                <field name="hours_per_day" attrs="{'invisible': [('contract_uom', '!=', 'days')]}"/>
+                                <field name="setu_hours_per_day" attrs="{'invisible': [('contract_uom', '!=', 'days')]}"/>
                                 <field name="contract_quantity" required="1"/>
                                 <field name="total_contract_service_hours" readonly="1" store="False"/>
                                 <field name="remaining_quantity" readonly="1"/>

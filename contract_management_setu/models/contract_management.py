@@ -15,7 +15,7 @@ class HrContract(models.Model):
     contract_uom = fields.Selection([('hours', 'Hours'), ('days', 'Days')], default='days', tracking=1, copy=False)
     from_date = fields.Date(string="From Date", tracking=1, copy=False)
     to_date = fields.Date(string="To Date", tracking=1, copy=False)
-    hours_per_day = fields.Float(string="Hours Per Day", tracking=1, copy=False)
+    setu_hours_per_day = fields.Float(string="Hours Per Day", tracking=1, copy=False)
     total_contract_service_hours = fields.Float(string="Total Contract Service Hours",
                                                 compute='_compute_total_contract_service_hours', store=True)
     contract_quantity = fields.Float(string="Contract Quantity", tracking=1, copy=False)
@@ -36,7 +36,7 @@ class HrContract(models.Model):
     is_auto_renewal = fields.Boolean(string="Is Auto Renewal?")
     timesheet_hours = fields.Float(string="Timesheet Hours")
 
-    @api.depends('contract_uom', 'hours_per_day', 'contract_quantity', 'timesheet_ids.unit_amount')
+    @api.depends('contract_uom', 'setu_hours_per_day', 'contract_quantity', 'timesheet_ids.unit_amount')
     def _compute_total_contract_service_hours(self):
         """
         Added By: Jigna J Savaniya | Date: 6th April,2022 | Task : 600
@@ -45,9 +45,9 @@ class HrContract(models.Model):
         for contract in self.filtered(lambda c: c.partner_id):
             if contract.contract_uom == 'hours':
                 contract.total_contract_service_hours = contract.contract_quantity
-                contract.hours_per_day = 0.00
+                contract.setu_hours_per_day = 0.00
             elif contract.contract_uom == 'days':
-                contract.total_contract_service_hours = round(contract.hours_per_day * contract.contract_quantity, 2)
+                contract.total_contract_service_hours = round(contract.setu_hours_per_day * contract.contract_quantity, 2)
 
             total_timesheet = sum(contract.timesheet_ids.mapped('unit_amount'))
             contract.remaining_quantity = contract.total_contract_service_hours - total_timesheet
