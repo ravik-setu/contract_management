@@ -118,3 +118,15 @@ class ProjectProject(models.Model):
             for rec in self:
                 rec.raise_error_if_email_not_set()
         return super(ProjectProject, self).write(vals)
+
+    def action_open_project_contracts(self):
+        res = super(ProjectProject, self).action_open_project_contracts()
+        contracts = self.env['hr.contract'].search(
+            [('analytic_account_id', '!=', False), ('analytic_account_id', 'in', self.analytic_account_id.ids)])
+        if (len(contracts) == 1):
+            res["views"] = [[self.env.ref('hr_contract.hr_contract_view_form').id, 'form']]
+        else:
+            res.update({'views': [[self.env.ref('hr_contract.hr_contract_view_kanban').id, 'kanban'],
+                                  [self.env.ref('hr_contract.hr_contract_view_tree').id, 'tree'],
+                                  [self.env.ref('hr_contract.hr_contract_view_form').id, 'form']]})
+        return res
