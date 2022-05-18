@@ -126,6 +126,7 @@
         <record id="contract_management_setu_inherited_hr_contract_view_search" model="ir.ui.view">
             <field name="name">contract_management_setu_inherited_hr_contract_view_search</field>
             <field name="model">hr.contract</field>
+            <field name="priority">500</field>
             <field name="inherit_id" ref="hr_contract.hr_contract_view_search"/>
             <field name="arch" type="xml">
                 <xpath expr="//search/group" position="inside">
@@ -206,6 +207,27 @@
             (0, 0, {'view_mode': 'form', 'view_id': ref('contract_management_setu.customer_contract_form_view')}),
             ]"
             />
+        </record>
+
+        <record id="hr_contract.action_hr_contract" model="ir.actions.act_window">
+            <field name="name">Contracts</field>
+            <field name="res_model">hr.contract</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="domain">[('employee_id', '!=', False)]</field>
+            <field name="context">{'search_default_group_by_state': 1}</field>
+            <field name="search_view_id" ref="hr_contract.hr_contract_view_search"/>
+            <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('hr_contract.hr_contract_view_kanban')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('hr_contract.hr_contract_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('hr_contract.hr_contract_view_form')}),
+            (0, 0, {'view_mode': 'activity', 'view_id': ref('hr_contract.hr_contract_view_activity')}),
+            ]"
+            />
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new contract
+                </p>
+            </field>
         </record>
 
         <!-- Menu Item -->
