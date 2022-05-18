@@ -200,7 +200,7 @@
             <field name="name">Customer Contract</field>
             <field name="res_model">hr.contract</field>
             <field name="view_mode">kanban,tree,form</field>
-             <field name="domain">[('customer_id', '!=', False)]</field>
+             <field name="domain">[('partner_id', '!=', False)]</field>
             <field name="search_view_id" ref="contract_management_setu_inherited_hr_contract_view_search"/>
             <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'kanban', 'view_id': ref('contract_management_setu.customer_contract_kanban_view')}),
