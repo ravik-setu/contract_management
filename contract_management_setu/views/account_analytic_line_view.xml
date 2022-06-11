@@ -13,5 +13,17 @@
                 </xpath>
             </field>
         </record>
+
+        <!-- Tree View -->
+        <record id="contract_management_setu_inherited_account_analytic_line_tree" model="ir.ui.view">
+            <field name="name">contract_management_setu_inherited_account_analytic_line_tree</field>
+            <field name="model">account.analytic.line</field>
+            <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='project_id']" position="after">
+                    <field name="contract_id"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>

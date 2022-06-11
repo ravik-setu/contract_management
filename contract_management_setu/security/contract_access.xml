@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="module_category_customer_contract" model="ir.module.category">
+<!--        <div class="o_horizontal_separator">Contract Access</div>-->
+        <field name="name">Contract Access</field>
+        <field name="description">access level for Customer Contract</field>
+        <field name="visible" eval="0"/>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="group_customer_contract_user" model="res.groups">
+        <field name="name">Customer Contract User</field>
+        <field name="category_id" ref="module_category_customer_contract"/>
+    </record>
+
+    <record id="group_customer_contract_manager" model="res.groups">
+        <field name="name">Customer Contract Manager</field>
+        <field name="category_id" ref="module_category_customer_contract"/>
+        <field name="implied_ids" eval="[(4, ref('hr_contract.group_hr_contract_manager'),(4, ref('group_customer_contract_user')))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="move_to_contract_wizard_form_view" model="ir.ui.view">
+            <field name="name">move_to_contract_wizard_form_view</field>
+            <field name="model">move.to.contract</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="customer_id" invisible="1"/>
+                            <field name="contract_id"
+                                   domain="[('partner_id', '=', customer_id)]"
+                                   options="{'no_create_edit': 1, 'no_create': True}"/>
+                        </group>
+                        <footer>
+                            <button name="update_contract" type="object" string="Update Contract" class="btn-primary"
+                                    data-hotkey="q"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                        </footer>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="move_to_contract_task_action_window" model="ir.actions.act_window">
+            <field name="name">Update Contract</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">move.to.contract</field>
+            <field name="view_mode">form</field>
+            <field name="binding_model_id" ref="project.model_project_task"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="move_to_contract_timesheet_action_window" model="ir.actions.act_window">
+            <field name="name">Update Contract</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">move.to.contract</field>
+            <field name="view_mode">form</field>
+            <field name="binding_model_id" ref="hr_timesheet.model_account_analytic_line"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

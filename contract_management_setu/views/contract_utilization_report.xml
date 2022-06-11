@@ -49,14 +49,15 @@
         <menuitem id="contract_report_root"
                   name="Report"
                   parent="contract_management_setu.menu_customer_contract_root"
-                  sequence="2" groups="account.group_account_invoice"/>
+                  sequence="2" groups="contract_management_setu.group_customer_contract_manager"/>
 
         <menuitem
                 id="contract_utilization_report_action_root"
                 name="Contract Utilization Report"
                 action="contract_utilization_report_action"
+                groups="contract_management_setu.group_customer_contract_manager"
                 parent="contract_report_root"
-                sequence="2" groups="account.group_account_invoice"
+                sequence="2"
         />
     </data>
 </odoo>

@@ -6,4 +6,5 @@
 "access_res_partner_portal","access_res_partner_portal","model_res_partner","base.group_portal",1,0,0,0
 "access_hr_contract_base_user","access_hr_contract_base_user","model_hr_contract","base.group_user",1,0,0,0
 "access_account_move_base_user","access_account_move_base_user","model_account_move","base.group_user",1,0,0,0
-access_hr_contract_report_analysis,hr_contract_report_analysis,model_hr_contract_report_analysis,base.group_user,1,1,1,1
+"access_hr_contract_report_analysis","hr_contract_report_analysis","model_hr_contract_report_analysis","base.group_user",1,1,1,1
+"access_move_to_contract","access.move.to.contract","model_move_to_contract",,1,1,1,1

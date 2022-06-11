@@ -8,6 +8,7 @@
     'website': 'https://www.odoo.com/app/invoicing',
     'depends': ['documents_hr_contract', 'timesheet_grid', 'project', 'account', 'project_hr_payroll_account', 'hr_contract'],
     'data': [
+        'security/contract_access.xml',
         'security/ir.model.access.csv',
         'views/contract_management_view.xml',
         'views/project_project_view.xml',
@@ -23,6 +24,7 @@
         'data/ir_cron.xml',
         'report/hr_contract_report_analysis.xml',
         'report/contract_timesheet_templates.xml',
+        'wizard/move_to_contract_view.xml',
     ],
     'demo': [
     ],

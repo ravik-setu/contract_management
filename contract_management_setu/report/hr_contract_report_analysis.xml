@@ -68,6 +68,7 @@
               action="action_report_invoice_pivot"
               parent="contract_management_setu.contract_report_root"
               sequence="3"
+              groups="contract_management_setu.group_customer_contract_manager"
     />
 
 </odoo>
