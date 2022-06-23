@@ -233,10 +233,12 @@
 
         <!-- Menu Item -->
         <menuitem id="menu_customer_contract_root" name="Customer Contract"
-                  parent="project.menu_main_pm" groups="account.group_account_invoice"/>
+                  parent="project.menu_main_pm"
+                  groups="account.group_account_invoice,contract_management_setu.group_customer_contract_user"/>
 
         <menuitem id="menu_customer_contract_sub_root" name="Customer Contract"
                   action="customer_contract_action" parent="menu_customer_contract_root"
-                  sequence="1" groups="account.group_account_invoice"/>
+                  sequence="1"
+                  groups="account.group_account_invoice,contract_management_setu.group_customer_contract_user"/>
     </data>
 </odoo>

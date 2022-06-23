@@ -328,3 +328,10 @@ class HrContract(models.Model):
             "res_id": self.id,
             "view_id": self.env.ref('hr_contract.hr_contract_view_form').id
         }
+
+    def get_formview_id(self, access_uid=None):
+        """ Override this method in order to redirect many2one towards the right model depending on access_uid """
+        res = super(HrContract, self).get_formview_id(access_uid=access_uid)
+        if self.partner_id:
+            return self.env.ref('contract_management_setu.customer_contract_form_view').id
+        return res
