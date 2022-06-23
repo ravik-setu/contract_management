@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//search/group" position="inside">
                     <filter string="Contract" name="contract_id" domain="[]"
-                            context="{'group_by': 'contract_id'}" groups="account.group_account_invoice"/>
+                            context="{'group_by': 'contract_id'}" groups="contract_management_setu.group_customer_contract_user"/>
                 </xpath>
             </field>
         </record>
@@ -21,7 +21,7 @@
             <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='project_id']" position="after">
-                    <field name="contract_id"/>
+                    <field name="contract_id" groups="contract_management_setu.group_customer_contract_user"/>
                 </xpath>
             </field>
         </record>

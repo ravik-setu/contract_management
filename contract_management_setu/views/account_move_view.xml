@@ -9,7 +9,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="project_id" attrs="{'invisible':[('move_type', 'not in', ('out_invoice'))]}"/>
                     <field name="contract_id" domain="[('project_id', '=', project_id)]"
-                           options="{'no_create': True, 'no_edit': True}" groups="account.group_account_invoice"
+                           options="{'no_create': True, 'no_edit': True}" groups="contract_management_setu.group_customer_contract_user"
                            attrs="{'invisible':[('move_type', 'not in', ('out_invoice'))]}"/>
                 </xpath>
             </field>

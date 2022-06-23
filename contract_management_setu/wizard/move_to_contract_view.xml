@@ -13,7 +13,8 @@
                             <field name="customer_id" invisible="1"/>
                             <field name="contract_id"
                                    domain="[('partner_id', '=', customer_id)]"
-                                   options="{'no_create_edit': 1, 'no_create': True}"/>
+                                   options="{'no_create_edit': 1, 'no_create': True}"
+                                   groups="contract_management_setu.group_customer_contract_user"/>
                         </group>
                         <footer>
                             <button name="update_contract" type="object" string="Update Contract" class="btn-primary"
